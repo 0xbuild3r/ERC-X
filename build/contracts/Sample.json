@@ -1,0 +1,1354 @@
+{
+  "contractName": "Sample",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "mintingFinished",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "name",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "itemByIndex",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        },
+        {
+          "name": "_data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferSuperOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        },
+        {
+          "name": "_data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "safeTransferHyperOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApprovedAddressForHyperOwnershipTransfer",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "safeTransferOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "mint",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApprovedForHyperOwnershipTransfer",
+      "outputs": [
+        {
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        },
+        {
+          "name": "itemURI",
+          "type": "string"
+        }
+      ],
+      "name": "mintWithItemURI",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOfOwnerships",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "ownershipOfAddressByIndex",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ownerOf",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "superOwnerOf",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "superOwner",
+          "type": "address"
+        },
+        {
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "superOwnershipOfAddressByIndex",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "totalNumberOfItems",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "hyperOwner",
+          "type": "address"
+        },
+        {
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "hyperOwnershipOfAddressByIndex",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "approveSuperOwnershipTransfer",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferHyperOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "finishMinting",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApprovedForOwnershipTransfer",
+      "outputs": [
+        {
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApprovedAddressForSuperOwnershipTransfer",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferSuperOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "addMinter",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "renounceMinter",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOfSuperOwnerships",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "setApprovalForAll",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "safeTransferSuperOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "isMinter",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "itemURI",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "HyperOwnerOf",
+      "outputs": [
+        {
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "hyperOwnerOf",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOfHyperOwnerships",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "approveHyperOwnershipTransfer",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        },
+        {
+          "name": "_data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferHyperOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApprovedAddressForOwnershipTransfer",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "author",
+          "type": "address"
+        },
+        {
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "isApprovedForAll",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApprovedForSuperOwnershipTransfer",
+      "outputs": [
+        {
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "approveOwnershipTransfer",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "MintingFinished",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "MinterAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "MinterRemoved",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "SuperOwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "HyperOwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "approved",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ApprovalOwnershipTransfer",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "approved",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ApprovalSuperOwnershipTransfer",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "approved",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ApprovalHyperOwnershipTransfer",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "ApprovalForAll",
+      "type": "event"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "\npragma solidity ^0.5.0;\n\n\nimport './ERCXMintable.sol';\n\n\ncontract Sample is ERCXMintable {\n\n}",
+  "sourcePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/Sample.sol",
+  "ast": {
+    "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/Sample.sol",
+    "exportedSymbols": {
+      "Sample": [
+        3031
+      ]
+    },
+    "id": 3032,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3027,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "1:23:13"
+      },
+      {
+        "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/ERCXMintable.sol",
+        "file": "./ERCXMintable.sol",
+        "id": 3028,
+        "nodeType": "ImportDirective",
+        "scope": 3032,
+        "sourceUnit": 2460,
+        "src": "27:28:13",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 3029,
+              "name": "ERCXMintable",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2459,
+              "src": "77:12:13",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ERCXMintable_$2459",
+                "typeString": "contract ERCXMintable"
+              }
+            },
+            "id": 3030,
+            "nodeType": "InheritanceSpecifier",
+            "src": "77:12:13"
+          }
+        ],
+        "contractDependencies": [
+          1619,
+          2195,
+          2218,
+          2360,
+          2459,
+          2708,
+          2753,
+          2776,
+          2946,
+          5304,
+          5508
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 3031,
+        "linearizedBaseContracts": [
+          3031,
+          2459,
+          2946,
+          2218,
+          2360,
+          2776,
+          2195,
+          2753,
+          1619,
+          2708,
+          5304,
+          5508
+        ],
+        "name": "Sample",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 3032,
+        "src": "58:36:13"
+      }
+    ],
+    "src": "1:93:13"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/Sample.sol",
+    "exportedSymbols": {
+      "Sample": [
+        3031
+      ]
+    },
+    "id": 3032,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3027,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "1:23:13"
+      },
+      {
+        "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/ERCXMintable.sol",
+        "file": "./ERCXMintable.sol",
+        "id": 3028,
+        "nodeType": "ImportDirective",
+        "scope": 3032,
+        "sourceUnit": 2460,
+        "src": "27:28:13",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 3029,
+              "name": "ERCXMintable",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2459,
+              "src": "77:12:13",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ERCXMintable_$2459",
+                "typeString": "contract ERCXMintable"
+              }
+            },
+            "id": 3030,
+            "nodeType": "InheritanceSpecifier",
+            "src": "77:12:13"
+          }
+        ],
+        "contractDependencies": [
+          1619,
+          2195,
+          2218,
+          2360,
+          2459,
+          2708,
+          2753,
+          2776,
+          2946,
+          5304,
+          5508
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 3031,
+        "linearizedBaseContracts": [
+          3031,
+          2459,
+          2946,
+          2218,
+          2360,
+          2776,
+          2195,
+          2753,
+          1619,
+          2708,
+          5304,
+          5508
+        ],
+        "name": "Sample",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 3032,
+        "src": "58:36:13"
+      }
+    ],
+    "src": "1:93:13"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.0+commit.1d4f565a.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.1",
+  "updatedAt": "2019-10-07T12:31:44.948Z",
+  "devdoc": {
+    "methods": {
+      "approveOwnershipTransfer(address,uint256)": {
+        "details": "Approves another address to transfer the given token ID The zero address indicates there is no approved address. There can only be one approved address per token at a given time. Can only be called by the token owner or an approved operator.",
+        "params": {
+          "itemId": "uint256 ID of the token to be approved",
+          "to": "address to be approved for the given token ID"
+        }
+      },
+      "balanceOfOwnerships(address)": {
+        "details": "Gets the balance of the specified address",
+        "params": {
+          "user": "address to query the balance of"
+        },
+        "return": "uint256 representing the amount owned by the passed address"
+      },
+      "finishMinting()": {
+        "details": "Function to stop minting new items.",
+        "return": "True if the operation was successful."
+      },
+      "getApprovedAddressForOwnershipTransfer(uint256)": {
+        "details": "Gets the approved address for a token ID, or zero if no address set Reverts if the token ID does not exist.",
+        "params": {
+          "itemId": "uint256 ID of the token to query the approval of"
+        },
+        "return": "address currently approved for the given token ID"
+      },
+      "isApprovedForAll(address,address)": {
+        "details": "Tells whether an operator is approved by a given owner",
+        "params": {
+          "author": "author address which you want to query the approval of",
+          "operator": "operator address which you want to query the approval of"
+        },
+        "return": "bool whether the given operator is approved by the given owner"
+      },
+      "itemByIndex(uint256)": {
+        "details": "Gets the item ID at a given index of all the items in this contract Reverts if the index is greater or equal to the total number of items",
+        "params": {
+          "index": "uint256 representing the index to be accessed of the items list"
+        },
+        "return": "uint256 item ID at the given index of the items list"
+      },
+      "itemURI(uint256)": {
+        "details": "Returns an URI for a given item ID Throws if the item ID does not exist. May return an empty string.",
+        "params": {
+          "itemId": "uint256 ID of the item to query"
+        }
+      },
+      "mint(address,uint256)": {
+        "details": "Function to mint items",
+        "params": {
+          "itemId": "The item id to mint.",
+          "to": "The address that will receive the minted items."
+        },
+        "return": "A boolean that indicates if the operation was successful."
+      },
+      "mintingFinished()": {
+        "return": "true if the minting is finished."
+      },
+      "name()": {
+        "details": "Gets the item name",
+        "return": "string representing the item name"
+      },
+      "ownerOf(uint256)": {
+        "details": "Gets the owner of the specified token ID",
+        "params": {
+          "itemId": "uint256 ID of the token to query the owner of"
+        },
+        "return": "owner address currently marked as the owner of the given token ID"
+      },
+      "ownershipOfAddressByIndex(address,uint256)": {
+        "details": "Gets the item ID at a given index of the items list of the requested owner",
+        "params": {
+          "index": "uint256 representing the index to be accessed of the requested items list",
+          "owner": "address owning the items list to be accessed"
+        },
+        "return": "uint256 item ID at the given index of the items list owned by the requested address"
+      },
+      "safeTransferOwnershipFrom(address,address,uint256)": {
+        "details": "Safely transfers the ownership of a given token ID to another address If the target address is a contract, it must implement `onERCXReceived`, which is called upon a safe transfer, and return the magic value `bytes4(keccak256(\"onERCXReceived(address,address,uint256,bytes)\"))`; otherwise, the transfer is reverted.   * Requires the msg sender to be the owner, approved, or operator",
+        "params": {
+          "from": "current owner of the token",
+          "itemId": "uint256 ID of the token to be transferred",
+          "to": "address to receive the ownership of the given token ID"
+        }
+      },
+      "safeTransferOwnershipFrom(address,address,uint256,bytes)": {
+        "details": "Safely transfers the ownership of a given token ID to another address If the target address is a contract, it must implement `onERCXReceived`, which is called upon a safe transfer, and return the magic value `bytes4(keccak256(\"onERCXReceived(address,address,uint256,bytes)\"))`; otherwise, the transfer is reverted. Requires the msg sender to be the owner, approved, or operator",
+        "params": {
+          "_data": "bytes data to send along with a safe transfer check",
+          "from": "current owner of the token",
+          "itemId": "uint256 ID of the token to be transferred",
+          "to": "address to receive the ownership of the given token ID"
+        }
+      },
+      "setApprovalForAll(address,bool)": {
+        "details": "Sets or unsets the approval of a given operator An operator is allowed to transfer all tokens of the sender on their behalf",
+        "params": {
+          "approved": "representing the status of the approval to be set",
+          "to": "operator address to set the approval"
+        }
+      },
+      "supportsInterface(bytes4)": {
+        "details": "See `IERC165.supportsInterface`.     * Time complexity O(1), guaranteed to always use less than 30 000 gas."
+      },
+      "symbol()": {
+        "details": "Gets the item symbol",
+        "return": "string representing the item symbol"
+      },
+      "totalNumberOfItems()": {
+        "details": "Gets the total amount of items stored by the contract",
+        "return": "uint256 representing the total amount of items"
+      },
+      "transferOwnershipFrom(address,address,uint256)": {
+        "details": "Transfers the ownership of a given token ID to another address Usage of this method is discouraged, use `safeTransferFrom` whenever possible Requires the msg sender to be the owner, approved, or operator",
+        "params": {
+          "from": "current owner of the token",
+          "itemId": "uint256 ID of the token to be transferred",
+          "to": "address to receive the ownership of the given token ID"
+        }
+      }
+    }
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}

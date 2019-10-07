@@ -1,0 +1,1552 @@
+{
+  "contractName": "ERCXFull",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "name",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "itemByIndex",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        },
+        {
+          "name": "_data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferSuperOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        },
+        {
+          "name": "_data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "safeTransferHyperOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApprovedAddressForHyperOwnershipTransfer",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "safeTransferOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApprovedForHyperOwnershipTransfer",
+      "outputs": [
+        {
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOfOwnerships",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "ownershipOfAddressByIndex",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ownerOf",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "superOwnerOf",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "superOwner",
+          "type": "address"
+        },
+        {
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "superOwnershipOfAddressByIndex",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "totalNumberOfItems",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "hyperOwner",
+          "type": "address"
+        },
+        {
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "hyperOwnershipOfAddressByIndex",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "approveSuperOwnershipTransfer",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferHyperOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApprovedForOwnershipTransfer",
+      "outputs": [
+        {
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApprovedAddressForSuperOwnershipTransfer",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferSuperOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOfSuperOwnerships",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "setApprovalForAll",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "safeTransferSuperOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "itemURI",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "HyperOwnerOf",
+      "outputs": [
+        {
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "hyperOwnerOf",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOfHyperOwnerships",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "approveHyperOwnershipTransfer",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        },
+        {
+          "name": "_data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferHyperOwnershipFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApprovedAddressForOwnershipTransfer",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "author",
+          "type": "address"
+        },
+        {
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "isApprovedForAll",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApprovedForSuperOwnershipTransfer",
+      "outputs": [
+        {
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "approveOwnershipTransfer",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "symbol",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "SuperOwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "HyperOwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "approved",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ApprovalOwnershipTransfer",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "approved",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ApprovalSuperOwnershipTransfer",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "approved",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ApprovalHyperOwnershipTransfer",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "ApprovalForAll",
+      "type": "event"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "\npragma solidity ^0.5.0;\n\nimport './ERCXEnumerable.sol';\nimport './ERCXMetadata.sol';\n\ncontract ERCXFull is ERCX, ERCXEnumerable, ERCXMetadata {\n  constructor(string memory name, string memory symbol) ERCXMetadata(name, symbol)\n    public\n  {\n  }\n}\n\n\n",
+  "sourcePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/ERCXFull.sol",
+  "ast": {
+    "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/ERCXFull.sol",
+    "exportedSymbols": {
+      "ERCXFull": [
+        2218
+      ]
+    },
+    "id": 2219,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2197,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "1:23:3"
+      },
+      {
+        "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/ERCXEnumerable.sol",
+        "file": "./ERCXEnumerable.sol",
+        "id": 2198,
+        "nodeType": "ImportDirective",
+        "scope": 2219,
+        "sourceUnit": 2196,
+        "src": "26:30:3",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/ERCXMetadata.sol",
+        "file": "./ERCXMetadata.sol",
+        "id": 2199,
+        "nodeType": "ImportDirective",
+        "scope": 2219,
+        "sourceUnit": 2361,
+        "src": "57:28:3",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 2200,
+              "name": "ERCX",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 1619,
+              "src": "108:4:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ERCX_$1619",
+                "typeString": "contract ERCX"
+              }
+            },
+            "id": 2201,
+            "nodeType": "InheritanceSpecifier",
+            "src": "108:4:3"
+          },
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 2202,
+              "name": "ERCXEnumerable",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2195,
+              "src": "114:14:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ERCXEnumerable_$2195",
+                "typeString": "contract ERCXEnumerable"
+              }
+            },
+            "id": 2203,
+            "nodeType": "InheritanceSpecifier",
+            "src": "114:14:3"
+          },
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 2204,
+              "name": "ERCXMetadata",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2360,
+              "src": "130:12:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ERCXMetadata_$2360",
+                "typeString": "contract ERCXMetadata"
+              }
+            },
+            "id": 2205,
+            "nodeType": "InheritanceSpecifier",
+            "src": "130:12:3"
+          }
+        ],
+        "contractDependencies": [
+          1619,
+          2195,
+          2360,
+          2708,
+          2753,
+          2776,
+          5304,
+          5508
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 2218,
+        "linearizedBaseContracts": [
+          2218,
+          2360,
+          2776,
+          2195,
+          2753,
+          1619,
+          2708,
+          5304,
+          5508
+        ],
+        "name": "ERCXFull",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 2216,
+              "nodeType": "Block",
+              "src": "241:5:3",
+              "statements": []
+            },
+            "documentation": null,
+            "id": 2217,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 2212,
+                    "name": "name",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 2207,
+                    "src": "214:4:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_memory_ptr",
+                      "typeString": "string memory"
+                    }
+                  },
+                  {
+                    "argumentTypes": null,
+                    "id": 2213,
+                    "name": "symbol",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 2209,
+                    "src": "220:6:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_memory_ptr",
+                      "typeString": "string memory"
+                    }
+                  }
+                ],
+                "id": 2214,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 2211,
+                  "name": "ERCXMetadata",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 2360,
+                  "src": "201:12:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_type$_t_contract$_ERCXMetadata_$2360_$",
+                    "typeString": "type(contract ERCXMetadata)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "201:26:3"
+              }
+            ],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2210,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2207,
+                  "name": "name",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2217,
+                  "src": "159:18:3",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 2206,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "159:6:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2209,
+                  "name": "symbol",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2217,
+                  "src": "179:20:3",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 2208,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "179:6:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "158:42:3"
+            },
+            "returnParameters": {
+              "id": 2215,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "241:0:3"
+            },
+            "scope": 2218,
+            "src": "147:99:3",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 2219,
+        "src": "87:161:3"
+      }
+    ],
+    "src": "1:250:3"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/ERCXFull.sol",
+    "exportedSymbols": {
+      "ERCXFull": [
+        2218
+      ]
+    },
+    "id": 2219,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2197,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "1:23:3"
+      },
+      {
+        "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/ERCXEnumerable.sol",
+        "file": "./ERCXEnumerable.sol",
+        "id": 2198,
+        "nodeType": "ImportDirective",
+        "scope": 2219,
+        "sourceUnit": 2196,
+        "src": "26:30:3",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/ERCXMetadata.sol",
+        "file": "./ERCXMetadata.sol",
+        "id": 2199,
+        "nodeType": "ImportDirective",
+        "scope": 2219,
+        "sourceUnit": 2361,
+        "src": "57:28:3",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 2200,
+              "name": "ERCX",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 1619,
+              "src": "108:4:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ERCX_$1619",
+                "typeString": "contract ERCX"
+              }
+            },
+            "id": 2201,
+            "nodeType": "InheritanceSpecifier",
+            "src": "108:4:3"
+          },
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 2202,
+              "name": "ERCXEnumerable",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2195,
+              "src": "114:14:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ERCXEnumerable_$2195",
+                "typeString": "contract ERCXEnumerable"
+              }
+            },
+            "id": 2203,
+            "nodeType": "InheritanceSpecifier",
+            "src": "114:14:3"
+          },
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 2204,
+              "name": "ERCXMetadata",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2360,
+              "src": "130:12:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ERCXMetadata_$2360",
+                "typeString": "contract ERCXMetadata"
+              }
+            },
+            "id": 2205,
+            "nodeType": "InheritanceSpecifier",
+            "src": "130:12:3"
+          }
+        ],
+        "contractDependencies": [
+          1619,
+          2195,
+          2360,
+          2708,
+          2753,
+          2776,
+          5304,
+          5508
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 2218,
+        "linearizedBaseContracts": [
+          2218,
+          2360,
+          2776,
+          2195,
+          2753,
+          1619,
+          2708,
+          5304,
+          5508
+        ],
+        "name": "ERCXFull",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 2216,
+              "nodeType": "Block",
+              "src": "241:5:3",
+              "statements": []
+            },
+            "documentation": null,
+            "id": 2217,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 2212,
+                    "name": "name",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 2207,
+                    "src": "214:4:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_memory_ptr",
+                      "typeString": "string memory"
+                    }
+                  },
+                  {
+                    "argumentTypes": null,
+                    "id": 2213,
+                    "name": "symbol",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 2209,
+                    "src": "220:6:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_memory_ptr",
+                      "typeString": "string memory"
+                    }
+                  }
+                ],
+                "id": 2214,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 2211,
+                  "name": "ERCXMetadata",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 2360,
+                  "src": "201:12:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_type$_t_contract$_ERCXMetadata_$2360_$",
+                    "typeString": "type(contract ERCXMetadata)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "201:26:3"
+              }
+            ],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2210,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2207,
+                  "name": "name",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2217,
+                  "src": "159:18:3",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 2206,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "159:6:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2209,
+                  "name": "symbol",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2217,
+                  "src": "179:20:3",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 2208,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "179:6:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "158:42:3"
+            },
+            "returnParameters": {
+              "id": 2215,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "241:0:3"
+            },
+            "scope": 2218,
+            "src": "147:99:3",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 2219,
+        "src": "87:161:3"
+      }
+    ],
+    "src": "1:250:3"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.0+commit.1d4f565a.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.1",
+  "updatedAt": "2019-10-07T12:31:44.949Z",
+  "devdoc": {
+    "methods": {
+      "approveOwnershipTransfer(address,uint256)": {
+        "details": "Approves another address to transfer the given token ID The zero address indicates there is no approved address. There can only be one approved address per token at a given time. Can only be called by the token owner or an approved operator.",
+        "params": {
+          "itemId": "uint256 ID of the token to be approved",
+          "to": "address to be approved for the given token ID"
+        }
+      },
+      "balanceOfOwnerships(address)": {
+        "details": "Gets the balance of the specified address",
+        "params": {
+          "user": "address to query the balance of"
+        },
+        "return": "uint256 representing the amount owned by the passed address"
+      },
+      "getApprovedAddressForOwnershipTransfer(uint256)": {
+        "details": "Gets the approved address for a token ID, or zero if no address set Reverts if the token ID does not exist.",
+        "params": {
+          "itemId": "uint256 ID of the token to query the approval of"
+        },
+        "return": "address currently approved for the given token ID"
+      },
+      "isApprovedForAll(address,address)": {
+        "details": "Tells whether an operator is approved by a given owner",
+        "params": {
+          "author": "author address which you want to query the approval of",
+          "operator": "operator address which you want to query the approval of"
+        },
+        "return": "bool whether the given operator is approved by the given owner"
+      },
+      "itemByIndex(uint256)": {
+        "details": "Gets the item ID at a given index of all the items in this contract Reverts if the index is greater or equal to the total number of items",
+        "params": {
+          "index": "uint256 representing the index to be accessed of the items list"
+        },
+        "return": "uint256 item ID at the given index of the items list"
+      },
+      "itemURI(uint256)": {
+        "details": "Returns an URI for a given item ID Throws if the item ID does not exist. May return an empty string.",
+        "params": {
+          "itemId": "uint256 ID of the item to query"
+        }
+      },
+      "name()": {
+        "details": "Gets the item name",
+        "return": "string representing the item name"
+      },
+      "ownerOf(uint256)": {
+        "details": "Gets the owner of the specified token ID",
+        "params": {
+          "itemId": "uint256 ID of the token to query the owner of"
+        },
+        "return": "owner address currently marked as the owner of the given token ID"
+      },
+      "ownershipOfAddressByIndex(address,uint256)": {
+        "details": "Gets the item ID at a given index of the items list of the requested owner",
+        "params": {
+          "index": "uint256 representing the index to be accessed of the requested items list",
+          "owner": "address owning the items list to be accessed"
+        },
+        "return": "uint256 item ID at the given index of the items list owned by the requested address"
+      },
+      "safeTransferOwnershipFrom(address,address,uint256)": {
+        "details": "Safely transfers the ownership of a given token ID to another address If the target address is a contract, it must implement `onERCXReceived`, which is called upon a safe transfer, and return the magic value `bytes4(keccak256(\"onERCXReceived(address,address,uint256,bytes)\"))`; otherwise, the transfer is reverted.   * Requires the msg sender to be the owner, approved, or operator",
+        "params": {
+          "from": "current owner of the token",
+          "itemId": "uint256 ID of the token to be transferred",
+          "to": "address to receive the ownership of the given token ID"
+        }
+      },
+      "safeTransferOwnershipFrom(address,address,uint256,bytes)": {
+        "details": "Safely transfers the ownership of a given token ID to another address If the target address is a contract, it must implement `onERCXReceived`, which is called upon a safe transfer, and return the magic value `bytes4(keccak256(\"onERCXReceived(address,address,uint256,bytes)\"))`; otherwise, the transfer is reverted. Requires the msg sender to be the owner, approved, or operator",
+        "params": {
+          "_data": "bytes data to send along with a safe transfer check",
+          "from": "current owner of the token",
+          "itemId": "uint256 ID of the token to be transferred",
+          "to": "address to receive the ownership of the given token ID"
+        }
+      },
+      "setApprovalForAll(address,bool)": {
+        "details": "Sets or unsets the approval of a given operator An operator is allowed to transfer all tokens of the sender on their behalf",
+        "params": {
+          "approved": "representing the status of the approval to be set",
+          "to": "operator address to set the approval"
+        }
+      },
+      "supportsInterface(bytes4)": {
+        "details": "See `IERC165.supportsInterface`.     * Time complexity O(1), guaranteed to always use less than 30 000 gas."
+      },
+      "symbol()": {
+        "details": "Gets the item symbol",
+        "return": "string representing the item symbol"
+      },
+      "totalNumberOfItems()": {
+        "details": "Gets the total amount of items stored by the contract",
+        "return": "uint256 representing the total amount of items"
+      },
+      "transferOwnershipFrom(address,address,uint256)": {
+        "details": "Transfers the ownership of a given token ID to another address Usage of this method is discouraged, use `safeTransferFrom` whenever possible Requires the msg sender to be the owner, approved, or operator",
+        "params": {
+          "from": "current owner of the token",
+          "itemId": "uint256 ID of the token to be transferred",
+          "to": "address to receive the ownership of the given token ID"
+        }
+      }
+    }
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}

@@ -1,0 +1,459 @@
+{
+  "contractName": "IERCXReceiver",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        },
+        {
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "onERCXReceived",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes4"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.5.0;\n\n\ncontract IERCXReceiver {\n\n  function onERCXReceived(\n    address operator,\n    address from,\n    uint256 itemId,\n    bytes memory data\n  )\n    public\n    returns(bytes4);\n\n}\n",
+  "sourcePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/IERCXReceiver.sol",
+  "ast": {
+    "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/IERCXReceiver.sol",
+    "exportedSymbols": {
+      "IERCXReceiver": [
+        2792
+      ]
+    },
+    "id": 2793,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2778,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:9"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 2792,
+        "linearizedBaseContracts": [
+          2792
+        ],
+        "name": "IERCXReceiver",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "id": 2791,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "onERCXReceived",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2787,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2780,
+                  "name": "operator",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2791,
+                  "src": "83:16:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2779,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "83:7:9",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2782,
+                  "name": "from",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2791,
+                  "src": "105:12:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2781,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "105:7:9",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2784,
+                  "name": "itemId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2791,
+                  "src": "123:14:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2783,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "123:7:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2786,
+                  "name": "data",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2791,
+                  "src": "143:17:9",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_memory_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 2785,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "143:5:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "77:87:9"
+            },
+            "returnParameters": {
+              "id": 2790,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2789,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2791,
+                  "src": "188:6:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes4",
+                    "typeString": "bytes4"
+                  },
+                  "typeName": {
+                    "id": 2788,
+                    "name": "bytes4",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "188:6:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes4",
+                      "typeString": "bytes4"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "187:8:9"
+            },
+            "scope": 2792,
+            "src": "54:142:9",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 2793,
+        "src": "26:173:9"
+      }
+    ],
+    "src": "0:200:9"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/IERCXReceiver.sol",
+    "exportedSymbols": {
+      "IERCXReceiver": [
+        2792
+      ]
+    },
+    "id": 2793,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2778,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:9"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 2792,
+        "linearizedBaseContracts": [
+          2792
+        ],
+        "name": "IERCXReceiver",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "id": 2791,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "onERCXReceived",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2787,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2780,
+                  "name": "operator",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2791,
+                  "src": "83:16:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2779,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "83:7:9",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2782,
+                  "name": "from",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2791,
+                  "src": "105:12:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2781,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "105:7:9",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2784,
+                  "name": "itemId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2791,
+                  "src": "123:14:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2783,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "123:7:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2786,
+                  "name": "data",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2791,
+                  "src": "143:17:9",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_memory_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 2785,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "143:5:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "77:87:9"
+            },
+            "returnParameters": {
+              "id": 2790,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2789,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2791,
+                  "src": "188:6:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes4",
+                    "typeString": "bytes4"
+                  },
+                  "typeName": {
+                    "id": 2788,
+                    "name": "bytes4",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "188:6:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes4",
+                      "typeString": "bytes4"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "187:8:9"
+            },
+            "scope": 2792,
+            "src": "54:142:9",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 2793,
+        "src": "26:173:9"
+      }
+    ],
+    "src": "0:200:9"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.0+commit.1d4f565a.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.1",
+  "updatedAt": "2019-10-07T12:27:58.947Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}
