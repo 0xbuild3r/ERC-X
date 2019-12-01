@@ -14,6 +14,11 @@ contract ERCXMintable is ERCXFull, MinterRole {
     _;
   }
 
+  constructor(string memory name, string memory symbol) ERCXFull(name, symbol)
+    public
+  {
+  }
+
   /**
    * @return true if the minting is finished.
    */

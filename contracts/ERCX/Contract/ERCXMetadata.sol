@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
 import './ERCX.sol';
-import './IERCXMetadata.sol';
+import '../Interface/IERCXMetadata.sol';
 
 contract ERCXMetadata is ERC165, ERCX, IERCXMetadata {
   // item name
@@ -51,7 +51,7 @@ contract ERCXMetadata is ERC165, ERCX, IERCXMetadata {
    * @param itemId uint256 ID of the item to query
    */
   function itemURI(uint256 itemId) public view returns (string memory) {
-    require(_isItemExists(itemId));
+    require(_exists(itemId,1));
     return _itemURIs[itemId];
   }
 
@@ -62,18 +62,17 @@ contract ERCXMetadata is ERC165, ERCX, IERCXMetadata {
    * @param uri string URI to assign
    */
   function _setItemURI(uint256 itemId, string memory uri) internal {
-    require(_isItemExists(itemId));
+    require(_exists(itemId,1));
     _itemURIs[itemId] = uri;
   }
 
   /**
    * @dev Internal function to burn a specific item
    * Reverts if the item does not exist
-   * @param owner owner of the item to burn
    * @param itemId uint256 ID of the item being burned by the msg.sender
    */
-  function _burn(address owner, uint256 itemId) internal {
-    super._burn(owner, itemId);
+  function _burn(uint256 itemId) internal {
+    super._burn(itemId);
 
     // Clear metadata (if any)
     if (bytes(_itemURIs[itemId]).length != 0) {

@@ -5,6 +5,29 @@
       "constant": true,
       "inputs": [
         {
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "name": "layer",
+          "type": "uint256"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
           "name": "interfaceId",
           "type": "bytes4"
         }
@@ -36,81 +59,11 @@
           "type": "uint256"
         },
         {
-          "name": "data",
-          "type": "bytes"
-        }
-      ],
-      "name": "safeTransferSuperOwnershipFrom",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "name": "itemId",
-          "type": "uint256"
-        },
-        {
-          "name": "data",
-          "type": "bytes"
-        }
-      ],
-      "name": "safeTransferOwnershipFrom",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "name": "itemId",
+          "name": "layer",
           "type": "uint256"
         }
       ],
-      "name": "safeTransferHyperOwnershipFrom",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "name": "itemId",
-          "type": "uint256"
-        }
-      ],
-      "name": "safeTransferOwnershipFrom",
+      "name": "safeTransferFrom",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -122,91 +75,16 @@
         {
           "name": "itemId",
           "type": "uint256"
-        }
-      ],
-      "name": "getApprovedForHyperOwnershipTransfer",
-      "outputs": [
-        {
-          "name": "operator",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "user",
-          "type": "address"
-        }
-      ],
-      "name": "balanceOfOwnerships",
-      "outputs": [
-        {
-          "name": "balance",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
         },
         {
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "name": "itemId",
+          "name": "layer",
           "type": "uint256"
         }
       ],
-      "name": "transferOwnershipFrom",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "itemId",
-          "type": "uint256"
-        }
-      ],
-      "name": "ownerOf",
+      "name": "getApprovedTransfer",
       "outputs": [
         {
-          "name": "owner",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "itemId",
-          "type": "uint256"
-        }
-      ],
-      "name": "superOwnerOf",
-      "outputs": [
-        {
-          "name": "owner",
+          "name": "",
           "type": "address"
         }
       ],
@@ -224,9 +102,13 @@
         {
           "name": "itemId",
           "type": "uint256"
+        },
+        {
+          "name": "layer",
+          "type": "uint256"
         }
       ],
-      "name": "approveSuperOwnershipTransfer",
+      "name": "approveTransferLimitFor",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -236,82 +118,36 @@
       "constant": false,
       "inputs": [
         {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "to",
-          "type": "address"
-        },
-        {
           "name": "itemId",
+          "type": "uint256"
+        },
+        {
+          "name": "layer",
           "type": "uint256"
         }
       ],
-      "name": "transferHyperOwnershipFrom",
+      "name": "setTransferLimitFor",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "itemId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getApprovedForOwnershipTransfer",
-      "outputs": [
-        {
-          "name": "operator",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
       "type": "function"
     },
     {
       "constant": false,
       "inputs": [
         {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "to",
-          "type": "address"
-        },
-        {
           "name": "itemId",
+          "type": "uint256"
+        },
+        {
+          "name": "layer",
           "type": "uint256"
         }
       ],
-      "name": "transferSuperOwnershipFrom",
+      "name": "revokeTransferLimitFor",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "user",
-          "type": "address"
-        }
-      ],
-      "name": "balanceOfSuperOwnerships",
-      "outputs": [
-        {
-          "name": "balance",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -322,7 +158,7 @@
           "type": "address"
         },
         {
-          "name": "_approved",
+          "name": "approved",
           "type": "bool"
         }
       ],
@@ -336,19 +172,19 @@
       "constant": false,
       "inputs": [
         {
-          "name": "from",
-          "type": "address"
-        },
-        {
           "name": "to",
           "type": "address"
         },
         {
           "name": "itemId",
           "type": "uint256"
+        },
+        {
+          "name": "layer",
+          "type": "uint256"
         }
       ],
-      "name": "safeTransferSuperOwnershipFrom",
+      "name": "approveTransfer",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -360,12 +196,16 @@
         {
           "name": "itemId",
           "type": "uint256"
+        },
+        {
+          "name": "layer",
+          "type": "uint256"
         }
       ],
-      "name": "HyperOwnerOf",
+      "name": "superOf",
       "outputs": [
         {
-          "name": "owner",
+          "name": "",
           "type": "address"
         }
       ],
@@ -377,15 +217,19 @@
       "constant": true,
       "inputs": [
         {
-          "name": "user",
-          "type": "address"
+          "name": "itemId",
+          "type": "uint256"
+        },
+        {
+          "name": "layer",
+          "type": "uint256"
         }
       ],
-      "name": "balanceOfHyperOwnerships",
+      "name": "getApprovedTransferLimit",
       "outputs": [
         {
-          "name": "balance",
-          "type": "uint256"
+          "name": "",
+          "type": "address"
         }
       ],
       "payable": false,
@@ -393,54 +237,33 @@
       "type": "function"
     },
     {
-      "constant": false,
+      "constant": true,
       "inputs": [
-        {
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "name": "itemId",
-          "type": "uint256"
-        }
-      ],
-      "name": "approveHyperOwnershipTransfer",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "to",
-          "type": "address"
-        },
         {
           "name": "itemId",
           "type": "uint256"
         },
         {
-          "name": "data",
-          "type": "bytes"
+          "name": "layer",
+          "type": "uint256"
         }
       ],
-      "name": "safeTransferHyperOwnershipFrom",
-      "outputs": [],
+      "name": "ownerOf",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
       "payable": false,
-      "stateMutability": "nonpayable",
+      "stateMutability": "view",
       "type": "function"
     },
     {
       "constant": true,
       "inputs": [
         {
-          "name": "owner",
+          "name": "requester",
           "type": "address"
         },
         {
@@ -460,27 +283,12 @@
       "type": "function"
     },
     {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "itemId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getApprovedForSuperOwnershipTransfer",
-      "outputs": [
-        {
-          "name": "operator",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "constant": false,
       "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
         {
           "name": "to",
           "type": "address"
@@ -488,9 +296,17 @@
         {
           "name": "itemId",
           "type": "uint256"
+        },
+        {
+          "name": "layer",
+          "type": "uint256"
+        },
+        {
+          "name": "data",
+          "type": "bytes"
         }
       ],
-      "name": "approveOwnershipTransfer",
+      "name": "safeTransferFrom",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -501,6 +317,11 @@
       "inputs": [
         {
           "indexed": true,
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
           "name": "from",
           "type": "address"
         },
@@ -510,12 +331,17 @@
           "type": "address"
         },
         {
-          "indexed": true,
+          "indexed": false,
           "name": "itemId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "layer",
           "type": "uint256"
         }
       ],
-      "name": "OwnershipTransferred",
+      "name": "Transfer",
       "type": "event"
     },
     {
@@ -523,43 +349,26 @@
       "inputs": [
         {
           "indexed": true,
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "name": "to",
+          "name": "operator",
           "type": "address"
         },
         {
           "indexed": true,
           "name": "itemId",
           "type": "uint256"
-        }
-      ],
-      "name": "SuperOwnershipTransferred",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "name": "from",
-          "type": "address"
         },
         {
           "indexed": true,
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "name": "itemId",
+          "name": "layer",
           "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "satus",
+          "type": "bool"
         }
       ],
-      "name": "HyperOwnershipTransferred",
+      "name": "TransferLimitSet",
       "type": "event"
     },
     {
@@ -576,56 +385,17 @@
           "type": "address"
         },
         {
-          "indexed": true,
+          "indexed": false,
           "name": "itemId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "layer",
           "type": "uint256"
         }
       ],
-      "name": "ApprovalOwnershipTransfer",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "name": "approved",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "name": "itemId",
-          "type": "uint256"
-        }
-      ],
-      "name": "ApprovalSuperOwnershipTransfer",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "name": "approved",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "name": "itemId",
-          "type": "uint256"
-        }
-      ],
-      "name": "ApprovalHyperOwnershipTransfer",
+      "name": "ApprovalTransfer",
       "type": "event"
     },
     {
@@ -649,6 +419,52 @@
       ],
       "name": "ApprovalForAll",
       "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "approved",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "itemId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "layer",
+          "type": "uint256"
+        }
+      ],
+      "name": "ApprovalTransferLimit",
+      "type": "event"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "itemURI",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "constant": true,
@@ -677,45 +493,26 @@
       "payable": false,
       "stateMutability": "view",
       "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "itemId",
-          "type": "uint256"
-        }
-      ],
-      "name": "itemURI",
-      "outputs": [
-        {
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
     }
   ],
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity ^0.5.0;\n\nimport './IERCX.sol';\ncontract IERCXMetadata is IERCX {\n  function name() external view returns (string memory);\n  function symbol() external view returns (string memory);\n  function itemURI(uint256 itemId) public view returns (string memory);\n}",
-  "sourcePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/IERCXMetadata.sol",
+  "source": "pragma solidity ^0.5.0;\n\nimport './IERCX.sol';\ncontract IERCXMetadata is IERCX {\n  function itemURI(uint256 itemId) public view returns (string memory);\n  function name() external view returns (string memory);\n  function symbol() external view returns (string memory);\n}",
+  "sourcePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/Interface/IERCXMetadata.sol",
   "ast": {
-    "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/IERCXMetadata.sol",
+    "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/Interface/IERCXMetadata.sol",
     "exportedSymbols": {
       "IERCXMetadata": [
-        2776
+        2546
       ]
     },
-    "id": 2777,
+    "id": 2547,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2755,
+        "id": 2525,
         "literals": [
           "solidity",
           "^",
@@ -723,16 +520,16 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:8"
+        "src": "0:23:10"
       },
       {
-        "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/IERCX.sol",
+        "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/Interface/IERCX.sol",
         "file": "./IERCX.sol",
-        "id": 2756,
+        "id": 2526,
         "nodeType": "ImportDirective",
-        "scope": 2777,
-        "sourceUnit": 2709,
-        "src": "25:21:8",
+        "scope": 2547,
+        "sourceUnit": 2495,
+        "src": "25:21:10",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -742,33 +539,33 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 2757,
+              "id": 2527,
               "name": "IERCX",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2708,
-              "src": "73:5:8",
+              "referencedDeclaration": 2494,
+              "src": "73:5:10",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IERCX_$2708",
+                "typeIdentifier": "t_contract$_IERCX_$2494",
                 "typeString": "contract IERCX"
               }
             },
-            "id": 2758,
+            "id": 2528,
             "nodeType": "InheritanceSpecifier",
-            "src": "73:5:8"
+            "src": "73:5:10"
           }
         ],
         "contractDependencies": [
-          2708,
-          6776
+          2494,
+          5184
         ],
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 2776,
+        "id": 2546,
         "linearizedBaseContracts": [
-          2776,
-          2708,
-          6776
+          2546,
+          2494,
+          5184
         ],
         "name": "IERCXMetadata",
         "nodeType": "ContractDefinition",
@@ -776,131 +573,23 @@
           {
             "body": null,
             "documentation": null,
-            "id": 2763,
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "name",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 2759,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "96:2:8"
-            },
-            "returnParameters": {
-              "id": 2762,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 2761,
-                  "name": "",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2763,
-                  "src": "122:13:8",
-                  "stateVariable": false,
-                  "storageLocation": "memory",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_string_memory_ptr",
-                    "typeString": "string"
-                  },
-                  "typeName": {
-                    "id": 2760,
-                    "name": "string",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "122:6:8",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_string_storage_ptr",
-                      "typeString": "string"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "121:15:8"
-            },
-            "scope": 2776,
-            "src": "83:54:8",
-            "stateMutability": "view",
-            "superFunction": null,
-            "visibility": "external"
-          },
-          {
-            "body": null,
-            "documentation": null,
-            "id": 2768,
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "symbol",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 2764,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "155:2:8"
-            },
-            "returnParameters": {
-              "id": 2767,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 2766,
-                  "name": "",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2768,
-                  "src": "181:13:8",
-                  "stateVariable": false,
-                  "storageLocation": "memory",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_string_memory_ptr",
-                    "typeString": "string"
-                  },
-                  "typeName": {
-                    "id": 2765,
-                    "name": "string",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "181:6:8",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_string_storage_ptr",
-                      "typeString": "string"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "180:15:8"
-            },
-            "scope": 2776,
-            "src": "140:56:8",
-            "stateMutability": "view",
-            "superFunction": null,
-            "visibility": "external"
-          },
-          {
-            "body": null,
-            "documentation": null,
-            "id": 2775,
+            "id": 2535,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "itemURI",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2771,
+              "id": 2531,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2770,
+                  "id": 2530,
                   "name": "itemId",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2775,
-                  "src": "216:14:8",
+                  "scope": 2535,
+                  "src": "100:14:10",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -908,10 +597,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2769,
+                    "id": 2529,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "216:7:8",
+                    "src": "100:7:10",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -921,19 +610,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "215:16:8"
+              "src": "99:16:10"
             },
             "returnParameters": {
-              "id": 2774,
+              "id": 2534,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2773,
+                  "id": 2533,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2775,
-                  "src": "253:13:8",
+                  "scope": 2535,
+                  "src": "137:13:10",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -941,10 +630,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 2772,
+                    "id": 2532,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "253:6:8",
+                    "src": "137:6:10",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -954,33 +643,141 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "252:15:8"
+              "src": "136:15:10"
             },
-            "scope": 2776,
-            "src": "199:69:8",
+            "scope": 2546,
+            "src": "83:69:10",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 2540,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "name",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2536,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "168:2:10"
+            },
+            "returnParameters": {
+              "id": 2539,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2538,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2540,
+                  "src": "194:13:10",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 2537,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "194:6:10",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "193:15:10"
+            },
+            "scope": 2546,
+            "src": "155:54:10",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 2545,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "symbol",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2541,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "227:2:10"
+            },
+            "returnParameters": {
+              "id": 2544,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2543,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2545,
+                  "src": "253:13:10",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 2542,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "253:6:10",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "252:15:10"
+            },
+            "scope": 2546,
+            "src": "212:56:10",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
           }
         ],
-        "scope": 2777,
-        "src": "47:223:8"
+        "scope": 2547,
+        "src": "47:223:10"
       }
     ],
-    "src": "0:270:8"
+    "src": "0:270:10"
   },
   "legacyAST": {
-    "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/IERCXMetadata.sol",
+    "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/Interface/IERCXMetadata.sol",
     "exportedSymbols": {
       "IERCXMetadata": [
-        2776
+        2546
       ]
     },
-    "id": 2777,
+    "id": 2547,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2755,
+        "id": 2525,
         "literals": [
           "solidity",
           "^",
@@ -988,16 +785,16 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:8"
+        "src": "0:23:10"
       },
       {
-        "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/IERCX.sol",
+        "absolutePath": "/Users/kohshiba/Desktop/Deed/ERCX/contracts/ERCX/Interface/IERCX.sol",
         "file": "./IERCX.sol",
-        "id": 2756,
+        "id": 2526,
         "nodeType": "ImportDirective",
-        "scope": 2777,
-        "sourceUnit": 2709,
-        "src": "25:21:8",
+        "scope": 2547,
+        "sourceUnit": 2495,
+        "src": "25:21:10",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -1007,33 +804,33 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 2757,
+              "id": 2527,
               "name": "IERCX",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2708,
-              "src": "73:5:8",
+              "referencedDeclaration": 2494,
+              "src": "73:5:10",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IERCX_$2708",
+                "typeIdentifier": "t_contract$_IERCX_$2494",
                 "typeString": "contract IERCX"
               }
             },
-            "id": 2758,
+            "id": 2528,
             "nodeType": "InheritanceSpecifier",
-            "src": "73:5:8"
+            "src": "73:5:10"
           }
         ],
         "contractDependencies": [
-          2708,
-          6776
+          2494,
+          5184
         ],
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 2776,
+        "id": 2546,
         "linearizedBaseContracts": [
-          2776,
-          2708,
-          6776
+          2546,
+          2494,
+          5184
         ],
         "name": "IERCXMetadata",
         "nodeType": "ContractDefinition",
@@ -1041,131 +838,23 @@
           {
             "body": null,
             "documentation": null,
-            "id": 2763,
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "name",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 2759,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "96:2:8"
-            },
-            "returnParameters": {
-              "id": 2762,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 2761,
-                  "name": "",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2763,
-                  "src": "122:13:8",
-                  "stateVariable": false,
-                  "storageLocation": "memory",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_string_memory_ptr",
-                    "typeString": "string"
-                  },
-                  "typeName": {
-                    "id": 2760,
-                    "name": "string",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "122:6:8",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_string_storage_ptr",
-                      "typeString": "string"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "121:15:8"
-            },
-            "scope": 2776,
-            "src": "83:54:8",
-            "stateMutability": "view",
-            "superFunction": null,
-            "visibility": "external"
-          },
-          {
-            "body": null,
-            "documentation": null,
-            "id": 2768,
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "symbol",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 2764,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "155:2:8"
-            },
-            "returnParameters": {
-              "id": 2767,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 2766,
-                  "name": "",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2768,
-                  "src": "181:13:8",
-                  "stateVariable": false,
-                  "storageLocation": "memory",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_string_memory_ptr",
-                    "typeString": "string"
-                  },
-                  "typeName": {
-                    "id": 2765,
-                    "name": "string",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "181:6:8",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_string_storage_ptr",
-                      "typeString": "string"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "180:15:8"
-            },
-            "scope": 2776,
-            "src": "140:56:8",
-            "stateMutability": "view",
-            "superFunction": null,
-            "visibility": "external"
-          },
-          {
-            "body": null,
-            "documentation": null,
-            "id": 2775,
+            "id": 2535,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "itemURI",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2771,
+              "id": 2531,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2770,
+                  "id": 2530,
                   "name": "itemId",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2775,
-                  "src": "216:14:8",
+                  "scope": 2535,
+                  "src": "100:14:10",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1173,10 +862,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2769,
+                    "id": 2529,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "216:7:8",
+                    "src": "100:7:10",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1186,19 +875,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "215:16:8"
+              "src": "99:16:10"
             },
             "returnParameters": {
-              "id": 2774,
+              "id": 2534,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2773,
+                  "id": 2533,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2775,
-                  "src": "253:13:8",
+                  "scope": 2535,
+                  "src": "137:13:10",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -1206,10 +895,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 2772,
+                    "id": 2532,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "253:6:8",
+                    "src": "137:6:10",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -1219,20 +908,128 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "252:15:8"
+              "src": "136:15:10"
             },
-            "scope": 2776,
-            "src": "199:69:8",
+            "scope": 2546,
+            "src": "83:69:10",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 2540,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "name",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2536,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "168:2:10"
+            },
+            "returnParameters": {
+              "id": 2539,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2538,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2540,
+                  "src": "194:13:10",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 2537,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "194:6:10",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "193:15:10"
+            },
+            "scope": 2546,
+            "src": "155:54:10",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 2545,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "symbol",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2541,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "227:2:10"
+            },
+            "returnParameters": {
+              "id": 2544,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2543,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2545,
+                  "src": "253:13:10",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 2542,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "253:6:10",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "252:15:10"
+            },
+            "scope": 2546,
+            "src": "212:56:10",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
           }
         ],
-        "scope": 2777,
-        "src": "47:223:8"
+        "scope": 2547,
+        "src": "47:223:10"
       }
     ],
-    "src": "0:270:8"
+    "src": "0:270:10"
   },
   "compiler": {
     "name": "solc",
@@ -1240,7 +1037,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.1",
-  "updatedAt": "2019-10-07T12:27:58.947Z",
+  "updatedAt": "2019-11-30T03:58:21.975Z",
   "devdoc": {
     "methods": {
       "supportsInterface(bytes4)": {
