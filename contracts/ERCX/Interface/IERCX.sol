@@ -5,7 +5,7 @@ import '../../Libraries/introspection/IERC165.sol';
 contract IERCX is IERC165 {
 
   event Transfer(address indexed operator, address indexed from, address indexed to, uint256 itemId, uint256 layer);
-  event TransferLimitSet(address indexed operator, uint256 indexed itemId, uint256 indexed layer, bool satus);
+  event TransferLimitSet(uint256 indexed itemId, uint256 indexed layer, uint256 indexed targetId, address operator, bool satus);
   event ApprovalTransfer(address indexed owner, address indexed approved, uint256 itemId, uint256 layer);
   event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
   event ApprovalTransferLimit(address indexed owner, address indexed approved, uint256 itemId, uint256 layer);
@@ -26,6 +26,6 @@ contract IERCX is IERC165 {
   function approveTransferLimitFor(address to, uint256 itemId, uint256 layer) public;
   function getApprovedTransferLimit(uint256 itemId, uint256 layer) public view returns(address);
 
-  function setTransferLimitFor(uint256 itemId, uint256 layer) public;
-  function revokeTransferLimitFor(uint256 itemId, uint256 layer) public;
+  function setTransferLimitFor(uint256 itemId, uint256 layer, uint256 targetLayer) public;
+  function revokeTransferLimitFor(uint256 itemId, uint256 layer, uint256 targetLayer) public;
 }

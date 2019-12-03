@@ -1,6 +1,6 @@
 require("@openzeppelin/test-helpers/configure")({
   provider: web3.currentProvider,
-  singletons: { defaultGas: 1000000, abstraction: "truffle" }
+  singletons: {  abstraction: "truffle" }
 });
 
 const {
@@ -13,16 +13,14 @@ const {
 
 const { ZERO_ADDRESS } = constants;
 const { expect } = require("chai");
-/*
-const bnChai = require("bn-chai");
 
-require("chai")
-  .use(require("chai-as-promised"))
-  .use(bnChai(BN))
-  .should();
-*/
-
-const Item = artifacts.require("./contracts/ERCX/Contract/ERCXMintable.sol");
+const Item = artifacts.require("./contracts/ERCX/Mock/ERCXFullmock.sol");
+const ERC721ReceiverMock = artifacts.require(
+  "./contracts/ERCX/Mock/ERC721Receivermock.sol"
+);
+const ERCXReceiverMock = artifacts.require(
+  "./contracts/ERCX/Mock/ERCXReceivermock.sol"
+);
 
 contract("Item", accounts => {
   let item;
@@ -32,6 +30,7 @@ contract("Item", accounts => {
     owner,
     newOwner,
     approvedTransfer,
+    approvedTransfer2,
     approvedSuspension,
     operator,
     other
@@ -39,11 +38,10 @@ contract("Item", accounts => {
 
   const name = "TEST";
   const symbol = "TST";
-  const MOCK_URI = "https://example.com";
 
   const data = "0x42";
   const ERCXRECEIVER_MAGIC_VALUE = "0x11111111";
-  const ERC721RECEIVER_MAGIC_VALUE = "0x00000000";
+  const ERC721RECEIVER_MAGIC_VALUE = "0x150b7a02";
 
   const firstItemId = new BN(100);
   const secondItemId = new BN(200);
@@ -60,14 +58,14 @@ contract("Item", accounts => {
 
   describe("like a mintable ERCX", function() {
     beforeEach(async () => {
-      await item.mintWithItemURI(owner, firstItemId, MOCK_URI, {
+      await item.mint(owner, firstItemId, {
         from: minter
       });
-      await item.mintWithItemURI(owner, secondItemId, MOCK_URI, {
+      await item.mint(owner, secondItemId, {
         from: minter
       });
     });
-
+  
     describe("balanceOf in ERCX", function() {
       context(
         "when the given address owns some items in layer2 as ERCX",
@@ -90,29 +88,6 @@ contract("Item", accounts => {
       context("when querying the zero address of layer2", function() {
         it("throws", async function() {
           await expectRevert.unspecified(item.balanceOf(ZERO_ADDRESS, 2));
-        });
-      });
-    });
-
-    describe("balanceOf in ERC721", function() {
-      context("when the given address owns some items as ERC721", function() {
-        it("returns the amount of items owned by the given address", async function() {
-          expect(await item.balanceOf(owner)).to.be.bignumber.equal("2");
-        });
-      });
-
-      context(
-        "when the given address does not own any items as ERC721",
-        function() {
-          it("returns 0", async function() {
-            expect(await item.balanceOf(other)).to.be.bignumber.equal("0");
-          });
-        }
-      );
-
-      context("when querying the zero address", function() {
-        it("throws", async function() {
-          await expectRevert.unspecified(item.balanceOf(ZERO_ADDRESS));
         });
       });
     });
@@ -146,25 +121,6 @@ contract("Item", accounts => {
       );
     });
 
-    describe("ownerOf in ERC721", function() {
-      context("when the given item ID was tracked by this item", function() {
-        const itemId = firstItemId;
-        it("returns the owner of the given item ID as ERC721", async function() {
-          expect(await item.ownerOf(itemId)).to.be.equal(owner);
-        });
-      });
-
-      context(
-        "when the given item ID was not tracked by this item",
-        function() {
-          const itemId = nonExistentItemId;
-          it("reverts", async function() {
-            await expectRevert.unspecified(item.ownerOf(itemId));
-          });
-        }
-      );
-    });
-
     describe("superOf in ERCX", function() {
       context("when the given item ID was tracked by this item", function() {
         const itemId = firstItemId;
@@ -190,6 +146,148 @@ contract("Item", accounts => {
           const itemId = firstItemId;
           it("reverts", async function() {
             await expectRevert.unspecified(item.superOf(itemId, 3));
+          });
+        }
+      );
+    });
+      
+    describe("setApprovalForAll in ERCX & ERC721", function() {
+      context(
+        "when the operator willing to approve is not the owner",
+        function() {
+          context(
+            "when there is no operator approval set by the sender",
+            function() {
+              it("approves the operator", async function() {
+                await item.setApprovalForAll(operator, true, { from: owner });
+
+                expect(await item.isApprovedForAll(owner, operator)).to.equal(
+                  true
+                );
+              });
+
+              it("emits an approval event", async function() {
+                const { logs } = await item.setApprovalForAll(operator, true, {
+                  from: owner
+                });
+
+                expectEvent.inLogs(logs, "ApprovalForAll", {
+                  owner: owner,
+                  operator: operator,
+                  approved: true
+                });
+              });
+            }
+          );
+
+          context("when the operator was set as not approved", function() {
+            beforeEach(async function() {
+              await item.setApprovalForAll(operator, false, { from: owner });
+            });
+
+            it("approves the operator", async function() {
+              await item.setApprovalForAll(operator, true, { from: owner });
+
+              expect(await item.isApprovedForAll(owner, operator)).to.equal(
+                true
+              );
+            });
+
+            it("emits an approval event", async function() {
+              const { logs } = await item.setApprovalForAll(operator, true, {
+                from: owner
+              });
+
+              expectEvent.inLogs(logs, "ApprovalForAll", {
+                owner: owner,
+                operator: operator,
+                approved: true
+              });
+            });
+
+            it("can unset the operator approval", async function() {
+              await item.setApprovalForAll(operator, false, { from: owner });
+
+              expect(await item.isApprovedForAll(owner, operator)).to.equal(
+                false
+              );
+            });
+          });
+
+          context("when the operator was already approved", function() {
+            beforeEach(async function() {
+              await item.setApprovalForAll(operator, true, { from: owner });
+            });
+
+            it("keeps the approval to the given address", async function() {
+              await item.setApprovalForAll(operator, true, { from: owner });
+
+              expect(await item.isApprovedForAll(owner, operator)).to.equal(
+                true
+              );
+            });
+
+            it("emits an approval event", async function() {
+              const { logs } = await item.setApprovalForAll(operator, true, {
+                from: owner
+              });
+
+              expectEvent.inLogs(logs, "ApprovalForAll", {
+                owner: owner,
+                operator: operator,
+                approved: true
+              });
+            });
+          });
+        }
+      );
+
+      context("when the operator is the owner", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.setApprovalForAll(owner, true, { from: owner })
+          );
+        });
+      });
+    });
+
+    describe("balanceOf in ERC721", function() {
+      context("when the given address owns some items as ERC721", function() {
+        it("returns the amount of items owned by the given address", async function() {
+          expect(await item.balanceOf(owner)).to.be.bignumber.equal("2");
+        });
+      });
+
+      context(
+        "when the given address does not own any items as ERC721",
+        function() {
+          it("returns 0", async function() {
+            expect(await item.balanceOf(other)).to.be.bignumber.equal("0");
+          });
+        }
+      );
+
+      context("when querying the zero address", function() {
+        it("throws", async function() {
+          await expectRevert.unspecified(item.balanceOf(ZERO_ADDRESS));
+        });
+      });
+    });
+
+    describe("ownerOf in ERC721", function() {
+      context("when the given item ID was tracked by this item", function() {
+        const itemId = firstItemId;
+        it("returns the owner of the given item ID as ERC721", async function() {
+          expect(await item.ownerOf(itemId)).to.be.equal(owner);
+        });
+      });
+
+      context(
+        "when the given item ID was not tracked by this item",
+        function() {
+          const itemId = nonExistentItemId;
+          it("reverts", async function() {
+            await expectRevert.unspecified(item.ownerOf(itemId));
           });
         }
       );
@@ -435,7 +533,7 @@ contract("Item", accounts => {
                 ERC721RECEIVER_MAGIC_VALUE,
                 false
               );
-              other = this.receiver.address;
+              const owner = this.receiver.address;
             });
 
             shouldTransferItemsByUsers721(transferFun);
@@ -456,7 +554,7 @@ contract("Item", accounts => {
                 {
                   operator: owner,
                   from: owner,
-                  itemId: itemId,
+                  tokenId: itemId,
                   data: data
                 }
               );
@@ -478,7 +576,7 @@ contract("Item", accounts => {
                 {
                   operator: approvedTransfer,
                   from: owner,
-                  itemId: itemId,
+                  tokenId: itemId,
                   data: data
                 }
               );
@@ -486,15 +584,14 @@ contract("Item", accounts => {
 
             describe("with an invalid item id", function() {
               it("reverts", async function() {
-                await expectRevert(
+                await expectRevert.unspecified(
                   transferFun.call(
                     this,
                     owner,
                     this.receiver.address,
-                    unknownItemId,
+                    nonExistentItemId,
                     { from: owner }
-                  ),
-                  "ERC721: operator query for nonexistent item"
+                  )
                 );
               });
             });
@@ -513,9 +610,15 @@ contract("Item", accounts => {
           it("reverts", async function() {
             const invalidReceiver = await ERC721ReceiverMock.new("0x42", false);
             await expectRevert(
-              item.safeTransferFrom(owner, invalidReceiver.address, itemId, {
-                from: owner
-              }),
+              item.safeTransferFrom(
+                owner,
+                invalidReceiver.address,
+                itemId,
+                data,
+                {
+                  from: owner
+                }
+              ),
               "ERC721: transfer to non ERC721Receiver implementer"
             );
           });
@@ -528,10 +631,16 @@ contract("Item", accounts => {
               true
             );
             await expectRevert(
-              item.safeTransferFrom(owner, invalidReceiver.address, itemId, {
-                from: owner
-              }),
-              "ERCXReceiverMock: reverting"
+              item.safeTransferFrom(
+                owner,
+                invalidReceiver.address,
+                itemId,
+                data,
+                {
+                  from: owner
+                }
+              ),
+              "ERC721ReceiverMock: reverting"
             );
           });
         });
@@ -540,189 +649,442 @@ contract("Item", accounts => {
           it("reverts", async function() {
             const invalidReceiver = item;
             await expectRevert.unspecified(
-              item.safeTransferFrom(owner, invalidReceiver.address, itemId, {
-                from: owner
-              })
+              item.safeTransferFrom(
+                owner,
+                invalidReceiver.address,
+                itemId,
+                data,
+                {
+                  from: owner
+                }
+              )
             );
           });
         });
       });
     });
 
-    /*
-    it("Should be able to transfer a non fungible item", async () => {
-      const uid = 0;
-      await card.mint(uid, alice);
+    describe("approve in ERC721", function() {
+      const itemId = firstItemId;
 
-      const balanceOf1 = await card.balanceOf.call(alice, uid);
-      balanceOf1.should.be.eq.BN(new BN(1));
+      let logs = null;
 
-      const balanceOf2 = await card.balanceOf.call(alice);
-      balanceOf2.should.be.eq.BN(new BN(1));
+      const itClearsApproval = function() {
+        it("clears approval for the item", async function() {
+          expect(await item.getApproved(itemId)).to.be.equal(ZERO_ADDRESS);
+        });
+      };
 
-      const tx2 = await safeTransferFromNoDataNFT(card, alice, bob, uid, {
-        from: alice
+      const itApproves = function(address) {
+        it("sets the approval for the target address", async function() {
+          expect(await item.getApproved(itemId)).to.be.equal(address);
+        });
+      };
+
+      const itEmitsApprovalEvent = function(address) {
+        it("emits an approval event", async function() {
+          expectEvent.inLogs(logs, "Approval", {
+            owner: owner,
+            approved: address,
+            tokenId: itemId
+          });
+        });
+      };
+
+      context("when clearing approval", function() {
+        context("when there was no prior approval", function() {
+          beforeEach(async function() {
+            ({ logs } = await item.approve(ZERO_ADDRESS, itemId, {
+              from: owner
+            }));
+          });
+
+          itClearsApproval();
+          itEmitsApprovalEvent(ZERO_ADDRESS);
+        });
+
+        context("when there was a prior approval", function() {
+          beforeEach(async function() {
+            await item.approve(approvedTransfer, itemId, { from: owner });
+            ({ logs } = await item.approve(ZERO_ADDRESS, itemId, {
+              from: owner
+            }));
+          });
+
+          itClearsApproval();
+          itEmitsApprovalEvent(ZERO_ADDRESS);
+        });
       });
 
-      const ownerOf2 = await card.ownerOf(uid);
-      assert.equal(ownerOf2, bob);
+      context("when approving a non-zero address", function() {
+        context("when there was no prior approval", function() {
+          beforeEach(async function() {
+            ({ logs } = await item.approve(approvedTransfer, itemId, {
+              from: owner
+            }));
+          });
 
-      assertEventVar(tx2, "Transfer", "from", alice);
-      assertEventVar(tx2, "Transfer", "to", bob);
-      assertEventVar(tx2, "Transfer", "itemId", uid);
+          itApproves(approvedTransfer);
+          itEmitsApprovalEvent(approvedTransfer);
+        });
 
-      const balanceOf3 = await card.balanceOf.call(bob);
-      balanceOf3.should.be.eq.BN(new BN(1));
-    });
+        context(
+          "when there was a prior approval to the same address",
+          function() {
+            beforeEach(async function() {
+              await item.approve(approvedTransfer, itemId, { from: owner });
+              ({ logs } = await item.approve(approvedTransfer, itemId, {
+                from: owner
+              }));
+            });
 
-    it("Should Alice authorize transfer from Bob", async () => {
-      const uid = 0;
-      const amount = 5;
-      await card.mint(uid, alice, amount);
-      let tx = await card.setApprovalForAll(bob, true, { from: alice });
+            itApproves(approvedTransfer);
+            itEmitsApprovalEvent(approvedTransfer);
+          }
+        );
 
-      assertEventVar(tx, "ApprovalForAll", "owner", alice);
-      assertEventVar(tx, "ApprovalForAll", "operator", bob);
-      assertEventVar(tx, "ApprovalForAll", "approved", true);
+        context(
+          "when there was a prior approval to a different address",
+          function() {
+            beforeEach(async function() {
+              await item.approve(approvedTransfer2, itemId, { from: owner });
+              ({ logs } = await item.approve(approvedTransfer2, itemId, {
+                from: owner
+              }));
+            });
 
-      tx = await safeTransferFromNoDataFT(card, alice, bob, uid, amount, {
-        from: bob
-      });
-
-      assertEventVar(tx, "TransferWithQuantity", "from", alice);
-      assertEventVar(tx, "TransferWithQuantity", "to", bob);
-      assertEventVar(tx, "TransferWithQuantity", "itemId", uid);
-      assertEventVar(tx, "TransferWithQuantity", "quantity", amount);
-    });
-
-    it("Should Carlos not be authorized to spend", async () => {
-      const uid = 0;
-      const amount = 5;
-      let tx = await card.setApprovalForAll(bob, true, { from: alice });
-
-      assertEventVar(tx, "ApprovalForAll", "owner", alice);
-      assertEventVar(tx, "ApprovalForAll", "operator", bob);
-      assertEventVar(tx, "ApprovalForAll", "approved", true);
-
-      await expectThrow(
-        safeTransferFromNoDataFT(card, alice, bob, uid, amount, {
-          from: carlos
-        })
-      );
-    });
-
-    it("Should get the correct number of coins owned by a user", async () => {
-      let numItems = await card.totalSupply();
-      let balanceOf = await card.balanceOf(alice);
-      balanceOf.should.be.eq.BN(new BN(0));
-
-      await card.mint(1000, alice, 100);
-      let numItems1 = await card.totalSupply();
-
-      numItems1.should.be.eq.BN(numItems.add(new BN(1)));
-
-      await card.mint(11, bob, 5);
-      let numItems2 = await card.totalSupply();
-      numItems2.should.be.eq.BN(numItems1.add(new BN(1)));
-
-      await card.mint(12, alice, 2);
-      let numItems3 = await card.totalSupply();
-      numItems3.should.be.eq.BN(numItems2.add(new BN(1)));
-
-      await card.mint(13, alice);
-      let numItems4 = await card.totalSupply();
-      numItems4.should.be.eq.BN(numItems3.add(new BN(1)));
-      balanceOf = await card.balanceOf(alice);
-      balanceOf.should.be.eq.BN(new BN(3));
-
-      const itemsOwned = await card.itemsOwned(alice);
-      const indexes = itemsOwned[0];
-      const balances = itemsOwned[1];
-
-      indexes[0].should.be.eq.BN(new BN(1000));
-      indexes[1].should.be.eq.BN(new BN(12));
-      indexes[2].should.be.eq.BN(new BN(13));
-
-      balances[0].should.be.eq.BN(new BN(100));
-      balances[1].should.be.eq.BN(new BN(2));
-      balances[2].should.be.eq.BN(new BN(1));
-    });
-
-    it("Should update balances of sender and receiver and ownerOf for NFTs", async () => {
-      //       bins :   -- 0 --  ---- 1 ----  ---- 2 ----  ---- 3 ----
-      let cards = []; //[0,1,2,3, 16,17,18,19, 32,33,34,35, 48,49,50,51];
-      let copies = []; //[0,1,2,3, 12,13,14,15, 11,12,13,14, 11,12,13,14];
-
-      let nCards = 100;
-
-      //Minting enough copies for transfer for each cards
-      for (let i = 300; i < nCards + 300; i++) {
-        await card.mint(i, alice);
-        cards.push(i);
-        copies.push(1);
-      }
-
-      const tx = await card.batchTransferFrom(alice, bob, cards, copies, {
-        from: alice
-      });
-
-      let balanceFrom;
-      let balanceTo;
-      let ownerOf;
-
-      for (let i = 0; i < cards.length; i++) {
-        balanceFrom = await card.balanceOf(alice, cards[i]);
-        balanceTo = await card.balanceOf(bob, cards[i]);
-        ownerOf = await card.ownerOf(cards[i]);
-
-        balanceFrom.should.be.eq.BN(0);
-        balanceTo.should.be.eq.BN(1);
-        assert.equal(ownerOf, bob);
-      }
-
-      assertEventVar(tx, "BatchTransfer", "from", alice);
-      assertEventVar(tx, "BatchTransfer", "to", bob);
-    });
-
-    it("Should be able to mint a non-fungible item", async () => {
-      const uid = 0;
-      await card.mint(uid, accounts[0]);
-
-      const balanceOf1 = await card.balanceOf.call(accounts[0], uid);
-      balanceOf1.should.be.eq.BN(new BN(1));
-
-      const balanceOf2 = await card.balanceOf.call(accounts[0]);
-      balanceOf2.should.be.eq.BN(new BN(1));
-
-      const ownerOf = await card.ownerOf.call(uid);
-      ownerOf.should.be.eq.BN(accounts[0]);
-    });
-
-    it("Should be impossible to mint NFT items with duplicate itemId", async () => {
-      const uid = 0;
-      await card.mint(uid, alice);
-      const supplyPostMint = await card.totalSupply();
-      await expectThrow(card.mint(uid, alice));
-      const supplyPostSecondMint = await card.totalSupply();
-      supplyPostMint.should.be.eq.BN(supplyPostSecondMint);
-    });
-
-    it("Should be impossible to mint NFT items more than once even when owner is the contract itself", async () => {
-      const uid = 0;
-      await card.mint(uid, card.address);
-      const supplyPostMint = await card.totalSupply();
-      await expectThrow(card.mint(uid, card.address, 3));
-      const supplyPostSecondMint = await card.totalSupply();
-      supplyPostMint.should.be.eq.BN(supplyPostSecondMint);
-    });
-    
-    describe("itemURI", function() {
-      it("should returns the URI of the item specifed by the given ID", async function() {
-        expect(await item.itemURI(firstItemId)).to.be.equal(
-          "https://example.com"
+            itApproves(approvedTransfer2);
+            itEmitsApprovalEvent(approvedTransfer2);
+          }
         );
       });
+
+      context(
+        "when the address that receives the approval is the owner",
+        function() {
+          it("reverts", async function() {
+            await expectRevert.unspecified(
+              item.approve(owner, itemId, { from: owner })
+            );
+          });
+        }
+      );
+
+      context("when the sender does not own the given item ID", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.approve(approvedTransfer, itemId, { from: other })
+          );
+        });
+      });
+
+      context("when the sender is approved for the given item ID", function() {
+        it("reverts", async function() {
+          await item.approve(approvedTransfer, itemId, { from: owner });
+          await expectRevert.unspecified(
+            item.approve(approvedTransfer2, itemId, { from: approvedTransfer })
+          );
+        });
+      });
+
+      context("when the sender is an operator", function() {
+        beforeEach(async function() {
+          await item.setApprovalForAll(operator, true, { from: owner });
+          ({ logs } = await item.approve(approvedTransfer, itemId, {
+            from: operator
+          }));
+        });
+
+        itApproves(approvedTransfer);
+        itEmitsApprovalEvent(approvedTransfer);
+      });
+
+      context("when the given item ID does not exist", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.approve(approvedTransfer, nonExistentItemId, {
+              from: operator
+            })
+          );
+        });
+      });
     });
-    */
+
+    describe("getApproved in ERC721", async function() {
+      context("when item is not minted", async function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.getApproved(nonExistentItemId, { from: minter })
+          );
+        });
+      });
+
+      context("when item has been minted ", async function() {
+        it("should return the zero address", async function() {
+          expect(await item.getApproved(firstItemId)).to.be.equal(ZERO_ADDRESS);
+        });
+
+        context("when account has been approvedTransfer", async function() {
+          beforeEach(async function() {
+            await item.approve(approvedTransfer, firstItemId, { from: owner });
+          });
+
+          it("should return approvedTransfer account", async function() {
+            expect(await item.getApproved(firstItemId)).to.be.equal(
+              approvedTransfer
+            );
+          });
+        });
+      });
+    });
+
+    describe("metadata", function() {
+      it("has a name", async function() {
+        expect(await item.name()).to.be.equal(name);
+      });
+
+      it("has a symbol", async function() {
+        expect(await item.symbol()).to.be.equal(symbol);
+      });
+
+      describe("item URI", function() {
+        const baseURI = "https://api.com/v1/";
+        const sampleUri = "mock://myitem";
+
+        it("it is empty by default", async function() {
+          expect(await item.itemURI(firstItemId)).to.be.equal("");
+        });
+
+        it("reverts when queried for non existent item id", async function() {
+          await expectRevert(
+            item.itemURI(nonExistentItemId),
+            "URI query for nonexistent item"
+          );
+        });
+
+        it("can be set for a item id", async function() {
+          await item.setItemURI(firstItemId, sampleUri);
+          expect(await item.itemURI(firstItemId)).to.be.equal(sampleUri);
+        });
+
+        it("reverts when setting for non existent item id", async function() {
+          await expectRevert.unspecified(
+            item.setItemURI(nonExistentItemId, sampleUri)
+          );
+        });
+
+        it("base URI can be set", async function() {
+          await item.setBaseURI(baseURI);
+          expect(await item.baseURI()).to.equal(baseURI);
+        });
+
+        it("base URI is added as a prefix to the item URI", async function() {
+          await item.setBaseURI(baseURI);
+          await item.setItemURI(firstItemId, sampleUri);
+
+          expect(await item.itemURI(firstItemId)).to.be.equal(
+            baseURI + sampleUri
+          );
+        });
+
+        it("item URI can be changed by changing the base URI", async function() {
+          await item.setBaseURI(baseURI);
+          await item.setItemURI(firstItemId, sampleUri);
+
+          const newBaseURI = "https://api.com/v2/";
+          await item.setBaseURI(newBaseURI);
+          expect(await item.itemURI(firstItemId)).to.be.equal(
+            newBaseURI + sampleUri
+          );
+        });
+
+        it("item URI is empty for items with no URI but with base URI", async function() {
+          await item.setBaseURI(baseURI);
+
+          expect(await item.itemURI(firstItemId)).to.be.equal("");
+        });
+
+    
+        it("items with URI can be burnt ", async function() {
+          await item.setItemURI(firstItemId, sampleUri);
+
+          await item.burn(firstItemId, { from: owner });
+
+          expect(await item.exists(firstItemId)).to.equal(false);
+          await expectRevert(
+            item.itemURI(firstItemId),
+            "URI query for nonexistent item"
+          );
+        });
+
+      });
+    });
+
+    describe("totalNumberOfItems", function() {
+      it("returns total item supply", async function() {
+        expect(await item.totalNumberOfItems()).to.be.bignumber.equal("2");
+      });
+    });
+
+    describe("itemOfOwnerByIndex", function() {
+      describe("when the given index is lower than the amount of items owned by the given address", function() {
+        it("returns the item ID placed at the given index", async function() {
+          expect(
+            await item.itemOfOwnerByIndex(owner, 1, 0)
+          ).to.be.bignumber.equal(firstItemId);
+        });
+      });
+
+      describe("when the index is greater than or equal to the total items owned by the given address", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.itemOfOwnerByIndex(owner, 1, 10)
+          );
+        });
+      });
+
+      describe("when the given address does not own any item", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.itemOfOwnerByIndex(other, 1, 0)
+          );
+        });
+      });
+
+    });
+
+    describe("itemByIndex", function() {
+      it("should return all items", async function() {
+        const itemsListed = await Promise.all(
+          [0, 1].map(i => item.itemByIndex(i))
+        );
+        expect(itemsListed.map(t => t.toNumber())).to.have.members([
+          firstItemId.toNumber(),
+          secondItemId.toNumber()
+        ]);
+      });
+
+      it("should revert if index is greater than supply", async function() {
+        await expectRevert.unspecified(
+          item.itemByIndex(2)
+        );
+      });
+
+      [firstItemId, secondItemId].forEach(function(itemId) {
+        it(`should return all items after burning item ${itemId} and minting new items`, async function() {
+          const newItemId = new BN(300);
+          const anotherNewItemId = new BN(400);
+
+          await item.burn(itemId, { from: owner });
+          await item.mint(newOwner, newItemId, { from: minter });
+          await item.mint(newOwner, anotherNewItemId, { from: minter });
+
+          expect(await item.totalNumberOfItems()).to.be.bignumber.equal("3");
+
+          const itemsListed = await Promise.all(
+            [0, 1, 2].map(i => item.itemByIndex(i))
+          );
+          const expectedItems = [
+            firstItemId,
+            secondItemId,
+            newItemId,
+            anotherNewItemId
+          ].filter(x => x !== itemId);
+          expect(itemsListed.map(t => t.toNumber())).to.have.members(
+            expectedItems.map(t => t.toNumber())
+          );
+        });
+      });
+    });
+
+    describe("mint", function() {
+      let logs = null;
+
+      describe("when successful", function() {
+        beforeEach(async function() {
+          const result = await item.mint(newOwner, thirdItemId, {
+            from: minter
+          });
+          logs = result.logs;
+        });
+
+        it("assigns the item to the new owner", async function() {
+          expect(await item.ownerOf(thirdItemId,1)).to.equal(newOwner);
+        });
+
+        it("increases the balance of its owner", async function() {
+          expect(await item.balanceOf(newOwner,1)).to.be.bignumber.equal("1");
+        });
+
+        it("emits a transfer and minted event", async function() {
+          expectEvent.inLogs(logs, "Transfer", {
+            from: ZERO_ADDRESS,
+            to: newOwner,
+            itemId: thirdItemId
+          });
+        });
+      });
+
+      describe("when the given owner address is the zero address", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.mint(ZERO_ADDRESS, thirdItemId, { from: minter })
+          );
+        });
+      });
+
+      describe("when the given item ID was already tracked by this contract", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.mint(owner, firstItemId, { from: minter })
+          );
+        });
+      });
+    });
+
+    describe("mintWithItemURI", function() {
+      const MOCK_URI = 'MOCKURI';
+      it("can mint with a itemUri", async function() {
+        await item.mintWithItemURI(newOwner, thirdItemId, MOCK_URI, {
+          from: minter
+        });
+      });
+    });
+
+    describe("burn", function() {
+      const itemId = firstItemId;
+      let logs = null;
+
+      describe("when successful", function() {
+        beforeEach(async function() {
+          const result = await item.burn(itemId, { from: owner });
+          logs = result.logs;
+        });
+
+        it("burns the given item ID and adjusts the balance of the owner", async function() {
+          await expectRevert.unspecified(
+            item.ownerOf(itemId)
+          );
+          expect(await item.balanceOf(owner)).to.be.bignumber.equal("1");
+        });
+
+        it("emits a burn event", async function() {
+          expectEvent.inLogs(logs, "Transfer", {
+            from: owner,
+            to: ZERO_ADDRESS,
+            itemId: itemId
+          });
+        });
+      });
+
+      describe("when the given item ID was not tracked by this contract", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.burn(nonExistentItemId, { from: creator })
+          );
+        });
+      });
+    });
+      
   });
 });

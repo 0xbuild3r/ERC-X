@@ -1,5 +1,5 @@
-var ERCXMintable = artifacts.require("./ERCXMintable.sol");
+var ERCXFull = artifacts.require("./ERCXFullmock.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(ERCXMintable, "TEST", "TST");
+  deployer.deploy(ERCXFull, "TEST", "TST");
 };

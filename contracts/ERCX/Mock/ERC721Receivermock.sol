@@ -13,11 +13,11 @@ contract ERC721ReceiverMock is IERC721Receiver {
         _reverts = reverts;
     }
 
-    function onERC721Received(address operator, address from, uint256 tokenId, bytes memory data)
+    function onERC721Received(address operator, address from, uint256 itemId, bytes memory data)
         public returns (bytes4)
     {
         require(!_reverts, "ERC721ReceiverMock: reverting");
-        emit Received(operator, from, tokenId, data, gasleft());
+        emit Received(operator, from, itemId, data, gasleft());
         return _retval;
     }
 }

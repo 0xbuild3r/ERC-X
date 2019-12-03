@@ -10,6 +10,9 @@ contract ERCXMetadata is ERC165, ERCX, IERCXMetadata {
   // item symbol
   string internal _symbol;
 
+  // Base URI
+  string private _baseURI;
+
   // Optional mapping for item URIs
   mapping(uint256 => string) private _itemURIs;
 
@@ -51,8 +54,29 @@ contract ERCXMetadata is ERC165, ERCX, IERCXMetadata {
    * @param itemId uint256 ID of the item to query
    */
   function itemURI(uint256 itemId) public view returns (string memory) {
-    require(_exists(itemId,1));
-    return _itemURIs[itemId];
+    require(
+      _exists(itemId,1),
+      "URI query for nonexistent item");
+
+    string memory _itemURI = _itemURIs[itemId];
+
+    // Even if there is a base URI, it is only appended to non-empty item-specific URIs
+    if (bytes(_itemURI).length == 0) {
+        return "";
+    } else {
+        // abi.encodePacked is being used to concatenate strings
+        return string(abi.encodePacked(_baseURI, _itemURI));
+    }
+
+  }
+
+  /**
+  * @dev Returns the base URI set via {_setBaseURI}. This will be
+  * automatically added as a preffix in {itemURI} to each item's URI, when
+  * they are non-empty.
+  */
+  function baseURI() external view returns (string memory) {
+      return _baseURI;
   }
 
   /**
@@ -64,6 +88,16 @@ contract ERCXMetadata is ERC165, ERCX, IERCXMetadata {
   function _setItemURI(uint256 itemId, string memory uri) internal {
     require(_exists(itemId,1));
     _itemURIs[itemId] = uri;
+  }
+
+  /**
+    * @dev Internal function to set the base URI for all item IDs. It is
+    * automatically added as a prefix to the value returned in {itemURI}.
+    *
+    * _Available since v2.5.0._
+    */
+  function _setBaseURI(string memory baseURI) internal {
+      _baseURI = baseURI;
   }
 
   /**
