@@ -88,7 +88,6 @@ contract ERCXEnumerable is ERC165, ERCX, IERCXEnumerable {
 
       _addItemToOwnerEnumeration(to, itemId,1);
       _addItemToOwnerEnumeration(to, itemId,2);
-      _addItemToOwnerEnumeration(to, itemId,3);
 
       _addItemToAllItemsEnumeration(itemId);
   }
@@ -104,15 +103,12 @@ contract ERCXEnumerable is ERC165, ERCX, IERCXEnumerable {
 
       address owner1 = ownerOf(itemId, 1);
       address owner2 = ownerOf(itemId, 2);
-      address owner3 = ownerOf(itemId, 3);
 
       _removeItemFromOwnerEnumeration(owner1, itemId, 1);
       _removeItemFromOwnerEnumeration(owner2, itemId, 2);
-      _removeItemFromOwnerEnumeration(owner3, itemId, 3);
       // Since itemId will be deleted, we can clear its slot in _ownedItemsIndex to trigger a gas refund
       _ownedItemsIndex[1][itemId] = 0;
       _ownedItemsIndex[2][itemId] = 0;
-      _ownedItemsIndex[3][itemId] = 0;
 
       _removeItemFromAllItemsEnumeration(itemId);
   }

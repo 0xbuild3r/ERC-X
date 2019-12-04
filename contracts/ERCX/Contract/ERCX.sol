@@ -29,19 +29,22 @@ contract ERCX is ERC165, IERCX {
   // Mapping from owner to operator approvals
   mapping (address => mapping (address => bool)) private _operatorApprovals;
 
-  // Mapping from item ID to layer to approved address of suspension
-  mapping (uint256 => mapping (uint256 => address)) private _transferLimitApprovals;
+  // Mapping from item ID to approved address of setting lien
+  mapping (uint256 => address) private _lienApprovals;
 
-  // Mapping from item iD to layer to target layer of transferrable status
-  mapping (uint256 => mapping (uint256 => mapping(uint256 => bool))) private _transferLimitStatus;
+  // Mapping from item ID to contract address of lien
+  mapping (uint256 => address) private _lienAddress;
 
-  // Mapping from item id to layer to target layer of  limitter address
-  mapping (uint256 => mapping (uint256 => mapping(uint256 => address))) private _transferLimitters;
+  // Mapping from item ID to approved address of setting tenant right agreement
+  mapping (uint256 => address) private _tenantRightApprovals;
+
+  // Mapping from item ID to contract address of TenantRight
+  mapping (uint256 => address) private _tenantRightAddress;
+
 
   bytes4 private constant _InterfaceId_ERCX = 
     bytes4(keccak256("balanceOf(address, uint256)")) ^
     bytes4(keccak256("ownerOf(uint256, uint256)")) ^
-    bytes4(keccak256("superOf(uint256, uint256)")) ^
     bytes4(keccak256("safeTransferFrom(address, address, uint256, uint256)")) ^
     bytes4(keccak256("safeTransferFrom(address, address, uint256, uint256, bytes)")) ^
     bytes4(keccak256("approveTransfer(address, uint256, uint256)")) ^
@@ -85,23 +88,6 @@ contract ERCX is ERC165, IERCX {
   }
 
   /**
-   * @dev Gets the upper layer address of the owner of the specified item ID
-   * @param itemId uint256 ID of the item to query the owner of
-   * @param layer uint256 number to specify the layer
-   * @return the upper layer address currently marked as the owner of the given item ID in the specified layer
-   */
-  function superOf(uint256 itemId, uint256 layer) public view returns (address) {
-    uint256 upperLayer = layer.add(1);
-    address owner;
-    if(upperLayer > 3){
-      owner = address(0);
-    }else{
-      owner = ownerOf(itemId, upperLayer);
-    }
-    return owner;
-  }
-
-  /**
    * @dev Approves another address to transfer the given item ID
    * The zero address indicates there is no approved address.
    * There can only be one approved address per item at a given time.
@@ -112,13 +98,32 @@ contract ERCX is ERC165, IERCX {
    */
   function approveTransfer(address to, uint256 itemId, uint256 layer) public {
     
-    address owner = ownerOf(itemId, layer);
-    address so = superOf(itemId, layer);
-    require(to != owner && to != so );
-    require(msg.sender == owner || msg.sender == so || isApprovedForAll(owner, msg.sender) || isApprovedForAll(so, msg.sender));
+    if(layer == 1){
+      address user = ownerOf(itemId, 1);
+      address owner = ownerOf(itemId, 2);
+      require(
+        msg.sender == user ||
+        msg.sender == owner ||
+        isApprovedForAll(user, msg.sender) ||
+        isApprovedForAll(owner, msg.sender)
+      );
+      if(msg.sender == owner || isApprovedForAll(owner, msg.sender)){
+        require(getCurrentTenantRight(itemId) == address(0));
+      }
+      _transferApprovals[itemId][layer] = to;
+      emit Approval(user, to, itemId, layer);
+    }
+  
+    if(layer == 2){
+      address owner = ownerOf(itemId, 2);
+      require(
+        msg.sender == owner ||
+        isApprovedForAll(owner, msg.sender)
+      );
+      _transferApprovals[itemId][layer] = to;
+      emit Approval(owner, to, itemId, layer);
+    }
 
-    _transferApprovals[itemId][layer] = to;
-    emit ApprovalTransfer(owner, to, itemId, layer);
   }
 
   /**
@@ -131,39 +136,6 @@ contract ERCX is ERC165, IERCX {
   function getApprovedTransfer(uint256 itemId, uint256 layer) public view returns (address) {
     require(_exists(itemId, layer));
     return _transferApprovals[itemId][layer];
-  }
-
-  /**
-   * @dev Approves another address to suspend the transfer right of the given item ID
-   * The zero address indicates there is no approved address.
-   * There can only be one approved address per item at a given time.
-   * Can only be called by the item owner or an approved operator.
-   * @param to address to be approved for the given item ID
-   * @param itemId uint256 ID of the item to be approved
-   * @param layer uint256 number to specify the layer
-   */
-  function approveTransferLimitFor(address to, uint256 itemId, uint256 layer) public {
-    
-    address owner = ownerOf(itemId, layer);
-    address so = superOf(itemId, layer);
-    require(to != owner && to != so );
-    require(msg.sender == owner || msg.sender == so || isApprovedForAll(owner, msg.sender) || isApprovedForAll(so, msg.sender));
-
-    _transferLimitApprovals[itemId][layer] = to;
-    emit ApprovalTransferLimit(owner, to, itemId, layer);
-
-  }
-
-  /**
-   * @dev Gets the approved address for suspension for transfer a item ID, or zero if no address set
-   * Reverts if the item ID does not exist.
-   * @param itemId uint256 ID of the item to query the approval of
-   * @param layer uint256 number to specify the layer
-   * @return address currently approved for the given item ID
-   */
-  function getApprovedTransferLimit(uint256 itemId, uint256 layer) public view returns (address) {
-    require(_exists(itemId, layer));
-    return _transferLimitApprovals[itemId][layer];
   }
 
   /**
@@ -189,48 +161,119 @@ contract ERCX is ERC165, IERCX {
   }
 
   /**
-   * @dev Limit the transferability of the specified item.
-   * msg.sender should be permitted by either owner or so(super owner)
-   * @param itemId uint256 ID of the item to be transferred
-   * @param layer uint256 number to specify the layer
-  */
-  function setTransferLimitFor(uint256 itemId, uint256 layer, uint256 targetLayer) public {
-
-    require(_exists(itemId, targetLayer)); 
-    require(layer >= targetLayer);
-    require(_transferLimitStatus[itemId][itemId][targetLayer] == true);
-    address owner = ownerOf(itemId, layer);
-    address so = superOf(itemId, layer);
-    require(msg.sender == getApprovedTransferLimit(itemId, layer) || isApprovedForAll(owner, msg.sender) || isApprovedForAll(so, msg.sender));
-
-    _transferLimitStatus[itemId][layer][targetLayer] = false;
-    _transferLimitters[itemId][layer][targetLayer] = msg.sender;
-
-    _clearTransferLimitApproval(itemId, layer);
-
-    emit TransferLimitSet(itemId, layer, targetLayer, msg.sender, true);
-
+   * @dev Approves another address to set lien contract for the given item ID
+   * The zero address indicates there is no approved address.
+   * There can only be one approved address per item at a given time.
+   * Can only be called by the item owner or an approved operator.
+   * @param to address to be approved for the given item ID
+   * @param itemId uint256 ID of the item to be approved
+   */
+  function approveLien(address to, uint256 itemId) public {
+    address owner = ownerOf(itemId, 2);
+    require(msg.sender == owner || isApprovedForAll(owner, msg.sender));
+    _lienApprovals[itemId] = to;
   }
 
   /**
-   * @dev Revole the limitation of transferability of the specified item.
-   *
-   * Requires the msg sender to be the setter of the limitation
-   * @param itemId uint256 ID of the item to be transferred
-   * @param layer uint256 number to specify the layer
-  */
-  function revokeTransferLimitFor(uint256 itemId, uint256 layer, uint256 targetLayer) public {
-    
-    require(_transferLimitStatus[itemId][itemId][targetLayer] == false);
-    address limitter = _transferLimitters[itemId][layer][targetLayer];
-    require(msg.sender == limitter);
-
-    _transferLimitStatus[itemId][layer][targetLayer] = true;
-    _transferLimitters[itemId][layer][targetLayer] = address(0);
-    emit TransferLimitSet(itemId, layer, targetLayer, msg.sender, false);
-
+   * @dev Gets the approved address for setting lien for a item ID, or zero if no address set
+   * Reverts if the item ID does not exist.
+   * @param itemId uint256 ID of the item to query the approval of
+   * @return address currently approved for the given item ID
+   */
+  function getApprovedLien(uint256 itemId) public view returns (address) {
+    require(_exists(itemId, 2));
+    return _lienApprovals[itemId];
+  }
+  /**
+   * @dev Sets lien agreements to already approved address
+   * The lien address is allowed to transfer all items of the sender on their behalf
+   * @param itemId uint256 ID of the item
+   */
+  function setLien(uint256 itemId) public {
+    require(msg.sender == getApprovedLien(itemId));
+    _lienAddress[itemId] = msg.sender;
+    _lienApprovals[itemId] = address(0);
+    emit LienSet(msg.sender, itemId, true);
   }
 
+  /**
+   * @dev Gets the current lien agreement address, or zero if no address set
+   * Reverts if the item ID does not exist.
+   * @param itemId uint256 ID of the item to query the lien address
+   * @return address of the lien agreement address for the given item ID
+   */
+  function getCurrentLien(uint256 itemId) public view returns (address) {
+    require(_exists(itemId, 2));
+    return _lienAddress[itemId];
+  }
+
+  /**
+   * @dev Revoke the lien agreements. Only the lien address can revoke.
+   * @param itemId uint256 ID of the item
+   */
+  function revokeLien(uint256 itemId) public {
+    require(msg.sender == getCurrentLien(itemId));
+    _lienAddress[itemId] = address(0);
+    emit LienSet(address(0), itemId, false);
+  }
+
+  /**
+   * @dev Approves another address to set tenant right agreement for the given item ID
+   * The zero address indicates there is no approved address.
+   * There can only be one approved address per item at a given time.
+   * Can only be called by the item owner or an approved operator.
+   * @param to address to be approved for the given item ID
+   * @param itemId uint256 ID of the item to be approved
+   */
+  function approveTenantRight(address to, uint256 itemId) public {
+    address owner = ownerOf(itemId, 2);
+    require(msg.sender == owner || isApprovedForAll(owner, msg.sender));
+   _tenantRightApprovals[itemId] = to;
+  }
+
+  /**
+   * @dev Gets the approved address for setting tenant right for a item ID, or zero if no address set
+   * Reverts if the item ID does not exist.
+   * @param itemId uint256 ID of the item to query the approval of
+   * @return address currently approved for the given item ID
+   */
+  function getApprovedTenantRight(uint256 itemId) public view returns (address) {
+    require(_exists(itemId, 2));
+    return _tenantRightApprovals[itemId];
+  }
+  /**
+   * @dev Sets the tenant right agreement to already approved address
+   * The lien address is allowed to transfer all items of the sender on their behalf
+   * @param itemId uint256 ID of the item
+   */
+  function setTenantRight(uint256 itemId) public {
+    require(msg.sender == getApprovedTenantRight(itemId));
+    _tenantRightAddress[itemId] = msg.sender;
+    _tenantRightApprovals[itemId] = address(0);
+    _clearTransferApproval(itemId,1); //Reset transfer approval
+    emit TenantRightSet(msg.sender, itemId, true);
+  }
+
+  /**
+   * @dev Gets the current tenant right agreement address, or zero if no address set
+   * Reverts if the item ID does not exist.
+   * @param itemId uint256 ID of the item to query the tenant right address
+   * @return address of the tenant right agreement address for the given item ID
+   */
+  function getCurrentTenantRight(uint256 itemId) public view returns (address) {
+    require(_exists(itemId, 2));
+    return _tenantRightAddress[itemId];
+  }
+
+  /**
+   * @dev Revoke the tenant right agreement. Only the lien address can revoke.
+   * @param itemId uint256 ID of the item
+   */
+  function revokeTenantRight(uint256 itemId) public {
+    require(msg.sender == getCurrentTenantRight(itemId));
+    _tenantRightAddress[itemId] = address(0);
+    emit TenantRightSet(address(0), itemId, false);
+  }
 
   /**
    * @dev Safely transfers the ownership of a given item ID to another address
@@ -297,8 +340,8 @@ contract ERCX is ERC165, IERCX {
     * @param data bytes data to send along with a safe transfer check
     */
   function _safeTransferFrom(address from, address to, uint256 itemId, uint256 layer, bytes memory data) internal {
-      _transferFrom(from, to, itemId, layer);
-      require(_checkOnERCXReceived(from, to, itemId, layer, data));
+    _transferFrom(from, to, itemId, layer);
+    require(_checkOnERCXReceived(from, to, itemId, layer, data));
   }
 
   /**
@@ -310,19 +353,34 @@ contract ERCX is ERC165, IERCX {
     * is an operator of the owner, or is the owner of the item
     */
   function _isEligibleForTransfer(address spender, uint256 itemId, uint256 layer) internal view returns (bool) {
-      require(_exists(itemId, layer));
-      address owner = ownerOf(itemId, layer);
-      address so = superOf(itemId, layer);
-      uint256 upperLayer = layer.add(1);
-      return (
+    require(_exists(itemId, layer));
+    if(layer == 1){
+      address user = ownerOf(itemId, 1);
+      address owner = ownerOf(itemId, 2);
+      require(
+        spender == user ||
         spender == owner ||
-        spender == so ||
-        getApprovedTransfer(itemId, layer) == spender ||
+        isApprovedForAll(user, spender) ||
         isApprovedForAll(owner, spender) ||
-        isApprovedForAll(so, spender) ||
-        _transferLimitStatus[itemId][layer][layer] ||
-        _transferLimitStatus[itemId][upperLayer][layer]
+        spender == getApprovedTransfer(itemId, layer) ||
+        spender == getCurrentLien(itemId)
       );
+      if(spender == owner || isApprovedForAll(owner,spender)){
+        require(getCurrentTenantRight(itemId) == address(0));
+      }
+      return true;
+    }
+  
+    if(layer == 2){
+      address owner = ownerOf(itemId, 2);
+      require(
+        spender == owner ||
+        isApprovedForAll(owner,spender) ||
+        spender == getApprovedTransfer(itemId, layer) ||
+        spender == getCurrentLien(itemId)
+      );
+      return true;
+    }
   }
 
   /**
@@ -365,7 +423,6 @@ contract ERCX is ERC165, IERCX {
       _mint(to, itemId);
       require(_checkOnERCXReceived(address(0), to, itemId, 1, data));
       require(_checkOnERCXReceived(address(0), to, itemId, 2, data));
-      require(_checkOnERCXReceived(address(0), to, itemId, 3, data));
   }
 
   /**
@@ -381,14 +438,12 @@ contract ERCX is ERC165, IERCX {
 
       _itemOwner[itemId][1] = to;
       _itemOwner[itemId][2] = to;
-      _itemOwner[itemId][3] = to;
       _ownedItemsCount[to][1].increment();
       _ownedItemsCount[to][2].increment();
-      _ownedItemsCount[to][3].increment();
 
-      emit Transfer(msg.sender, address(0), to, itemId,1);
-      emit Transfer(msg.sender, address(0), to, itemId,2);
-      emit Transfer(msg.sender, address(0), to, itemId,3);
+      emit Transfer(address(0), to, itemId, 1, msg.sender);
+      emit Transfer(address(0), to, itemId, 2, msg.sender);
+
   }
 
   /**
@@ -400,26 +455,20 @@ contract ERCX is ERC165, IERCX {
     
     require(_isEligibleForTransfer(msg.sender, itemId, 1));
     require(_isEligibleForTransfer(msg.sender, itemId, 2));
-    require(_isEligibleForTransfer(msg.sender, itemId, 3));
 
     address owner1 = ownerOf(itemId, 1);
     address owner2 = ownerOf(itemId, 2);
-    address owner3 = ownerOf(itemId, 3);
 
       _clearTransferApproval(itemId,1);
       _clearTransferApproval(itemId,2);
-      _clearTransferApproval(itemId,3);
 
       _ownedItemsCount[owner1][1].decrement();
       _ownedItemsCount[owner2][2].decrement();
-      _ownedItemsCount[owner3][3].decrement();
       _itemOwner[itemId][1] = address(0);
       _itemOwner[itemId][2] = address(0);
-      _itemOwner[itemId][3] = address(0);
 
-      emit Transfer(msg.sender, owner1, address(0), itemId,1);
-      emit Transfer(msg.sender, owner2, address(0), itemId,2);
-      emit Transfer(msg.sender, owner3, address(0), itemId,3);
+      emit Transfer(owner1, address(0), itemId, 1, msg.sender);
+      emit Transfer(owner2, address(0), itemId, 2, msg.sender);
   }
 
   /**
@@ -441,7 +490,7 @@ contract ERCX is ERC165, IERCX {
 
       _itemOwner[itemId][layer] = to;
 
-      emit Transfer(msg.sender, from, to, itemId, layer);
+      emit Transfer(from, to, itemId, layer, msg.sender);
   }
 
   /**
@@ -475,16 +524,6 @@ contract ERCX is ERC165, IERCX {
   function _clearTransferApproval(uint256 itemId, uint256 layer) private {
       if (_transferApprovals[itemId][layer] != address(0)) {
           _transferApprovals[itemId][layer] = address(0);
-      }
-  }
-  /**
-    * @dev Private function to clear current approval of a given item ID.
-    * @param itemId uint256 ID of the item to be transferred
-    * @param layer uint256 number to specify the layer
-    */
-  function _clearTransferLimitApproval(uint256 itemId, uint256 layer) private {
-      if (_transferLimitApprovals[itemId][layer] != address(0)) {
-          _transferLimitApprovals[itemId][layer] = address(0);
       }
   }
 

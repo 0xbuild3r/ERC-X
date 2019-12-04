@@ -30,9 +30,7 @@ contract ERCX721fier is ERC165, IERC721, ERCX {
   }
 
   function approve(address to, uint256 itemId) public {
-      address owner = ownerOf(itemId);
       approveTransfer(to, itemId, 1);
-      emit Approval(owner, to, itemId);
   }
 
   function getApproved(uint256 itemId) public view returns (address) {
