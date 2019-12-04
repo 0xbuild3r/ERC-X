@@ -96,8 +96,8 @@ contract ERCXMetadata is ERC165, ERCX, IERCXMetadata {
     *
     * _Available since v2.5.0._
     */
-  function _setBaseURI(string memory baseURI) internal {
-      _baseURI = baseURI;
+  function _setBaseURI(string memory baseUri) internal {
+      _baseURI = baseUri;
   }
 
   /**

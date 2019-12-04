@@ -97,10 +97,12 @@ contract ERCX is ERC165, IERCX {
    * @param layer uint256 number to specify the layer
    */
   function approveTransfer(address to, uint256 itemId, uint256 layer) public {
-    
+
+    address user = ownerOf(itemId, 1);
+    address owner = ownerOf(itemId, 2);
+
     if(layer == 1){
-      address user = ownerOf(itemId, 1);
-      address owner = ownerOf(itemId, 2);
+      require(to != owner && to != user);
       require(
         msg.sender == user ||
         msg.sender == owner ||
@@ -115,11 +117,8 @@ contract ERCX is ERC165, IERCX {
     }
   
     if(layer == 2){
-      address owner = ownerOf(itemId, 2);
-      require(
-        msg.sender == owner ||
-        isApprovedForAll(owner, msg.sender)
-      );
+      require(to != owner );
+      require(msg.sender == owner || isApprovedForAll(owner, msg.sender));
       _transferApprovals[itemId][layer] = to;
       emit Approval(owner, to, itemId, layer);
     }
@@ -170,6 +169,7 @@ contract ERCX is ERC165, IERCX {
    */
   function approveLien(address to, uint256 itemId) public {
     address owner = ownerOf(itemId, 2);
+    require(to != owner );
     require(msg.sender == owner || isApprovedForAll(owner, msg.sender));
     _lienApprovals[itemId] = to;
   }
@@ -227,6 +227,7 @@ contract ERCX is ERC165, IERCX {
    */
   function approveTenantRight(address to, uint256 itemId) public {
     address owner = ownerOf(itemId, 2);
+    require(to != owner );
     require(msg.sender == owner || isApprovedForAll(owner, msg.sender));
    _tenantRightApprovals[itemId] = to;
   }
