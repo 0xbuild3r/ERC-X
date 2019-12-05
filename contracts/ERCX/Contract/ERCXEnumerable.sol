@@ -65,14 +65,14 @@ contract ERCXEnumerable is ERC165, ERCX, IERCXEnumerable {
 
   /**
     * @dev Internal function to transfer ownership of a given item ID to another address.
-    * As opposed to transferFrom, this imposes no restrictions on msg.sender.
+    * As opposed to transfer, this imposes no restrictions on msg.sender.
     * @param from current owner of the item
     * @param to address to receive the ownership of the given item ID
     * @param itemId uint256 ID of the item to be transferred
     * @param layer uint256 number to specify the layer
     */
-  function _transferFrom(address from, address to, uint256 itemId, uint256 layer) internal {
-      super._transferFrom(from, to, itemId, layer);
+  function _transfer(address from, address to, uint256 itemId, uint256 layer) internal {
+      super._transfer(from, to, itemId, layer);
       _removeItemFromOwnerEnumeration(from, itemId, layer);
       _addItemToOwnerEnumeration(to, itemId, layer);
   }

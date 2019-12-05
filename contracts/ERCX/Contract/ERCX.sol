@@ -289,7 +289,7 @@ contract ERCX is ERC165, IERCX {
    * @param itemId uint256 ID of the item to be transferred
    * @param layer uint256 number to specify the layer
   */
-  function safeTransferFrom(
+  function safeTransfer(
     address from,
     address to,
     uint256 itemId,
@@ -298,7 +298,7 @@ contract ERCX is ERC165, IERCX {
     public
   {
     // solium-disable-next-line arg-overflow
-    safeTransferFrom(from, to, itemId, layer, "");
+    safeTransfer(from, to, itemId, layer, "");
   }
 
   /**
@@ -314,7 +314,7 @@ contract ERCX is ERC165, IERCX {
    * @param layer uint256 number to specify the layer
    * @param data bytes data to send along with a safe transfer check
    */
-  function safeTransferFrom(
+  function safeTransfer(
     address from,
     address to,
     uint256 itemId,
@@ -324,7 +324,7 @@ contract ERCX is ERC165, IERCX {
     public
   {
     require(_isEligibleForTransfer(msg.sender, itemId, layer));
-    _safeTransferFrom(from, to, itemId, layer, data);
+    _safeTransfer(from, to, itemId, layer, data);
   }
 
   /**
@@ -340,9 +340,9 @@ contract ERCX is ERC165, IERCX {
     * @param layer uint256 number to specify the layer
     * @param data bytes data to send along with a safe transfer check
     */
-  function _safeTransferFrom(address from, address to, uint256 itemId, uint256 layer, bytes memory data) internal {
-    _transferFrom(from, to, itemId, layer);
-    require(_checkOnERCXReceived(from, to, itemId, layer, data));
+  function _safeTransfer(address from, address to, uint256 itemId, uint256 layer, bytes memory data) internal {
+    _transfer(from, to, itemId, layer);
+    require(_checkOnERCXReceived(from, to, itemId, layer, data), "ERCX: transfer to non ERCXReceiver implementer");
   }
 
   /**
@@ -480,7 +480,7 @@ contract ERCX is ERC165, IERCX {
     * @param itemId uint256 ID of the item to be transferred
     * @param layer uint256 number to specify the layer
     */
-  function _transferFrom(address from, address to, uint256 itemId, uint256 layer) internal {
+  function _transfer(address from, address to, uint256 itemId, uint256 layer) internal {
       require( ownerOf(itemId,layer) == from );
       require(to != address(0));
 

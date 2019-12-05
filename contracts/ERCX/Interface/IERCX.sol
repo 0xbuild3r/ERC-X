@@ -12,8 +12,8 @@ contract IERCX is IERC165 {
   function balanceOf(address owner, uint256 layer) public view returns (uint256);
   function ownerOf(uint256 itemId, uint256 layer) public view returns (address);
 
-  function safeTransferFrom(address from, address to, uint256 itemId, uint256 layer) public;
-  function safeTransferFrom(address from, address to, uint256 itemId, uint256 layer, bytes memory data) public;
+  function safeTransfer(address from, address to, uint256 itemId, uint256 layer) public;
+  function safeTransfer(address from, address to, uint256 itemId, uint256 layer, bytes memory data) public;
 
   function approveTransfer(address to, uint256 itemId, uint256 layer) public;
   function getApprovedTransfer(uint256 itemId, uint256 layer) public view returns(address);

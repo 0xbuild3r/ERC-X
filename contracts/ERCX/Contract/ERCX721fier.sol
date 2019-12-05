@@ -39,7 +39,7 @@ contract ERCX721fier is ERC165, IERC721, ERCX {
 
   function transferFrom(address from, address to, uint256 itemId) public {
       require(_isEligibleForTransfer(msg.sender, itemId, 1));
-      _transferFrom(from, to, itemId,1);
+      _transfer(from, to, itemId,1);
   }
 
   function safeTransferFrom(address from, address to, uint256 itemId) public {
