@@ -129,7 +129,7 @@ contract("Item", accounts => {
         }
       );
     });
-*/
+
     describe("transfers in ERCX", function() {
       const itemId = firstItemId;
       let logs = null;
@@ -1160,109 +1160,89 @@ contract("Item", accounts => {
         });
       });
     });
-
+*/
     describe("approve in ERCX", function() {
       const itemId = firstItemId;
-      const layer = new BN(1);
       let logs = null;
 
-      beforeEach(async function() {
-        await item.safeTransfer(owner, user, firstItemId, layer, data, {
-          from: owner
-        });
-        await item.safeTransfer(owner, user, secondItemId, layer, data, {
-          from: owner
-        });
-      });
-
-      const itClearsApproval = function() {
-        it("clears approval for the item", async function() {
-          expect(await item.getApprovedTransfer(itemId, layer)).to.be.equal(
-            ZERO_ADDRESS
-          );
-        });
-      };
-
-      const itApproves = function(address) {
-        it("sets the approval for the target address", async function() {
-          expect(await item.getApprovedTransfer(itemId, layer)).to.be.equal(
-            address
-          );
-        });
-      };
-
-      const itEmitsApprovalEvent = function(address) {
-        it("emits an approval event", async function() {
-          expectEvent.inLogs(logs, "Approval", {
-            owner: user,
-            approved: address,
-            itemId: itemId,
-            layer: layer
+      describe("For layer 1", function() {
+        const layer = new BN(1);
+        beforeEach(async function() {
+          await item.safeTransfer(owner, user, firstItemId, layer, data, {
+            from: owner
+          });
+          await item.safeTransfer(owner, user, secondItemId, layer, data, {
+            from: owner
           });
         });
-      };
 
-      context("when clearing approval", function() {
-        context("when there was no prior approval", function() {
-          beforeEach(async function() {
-            ({ logs } = await item.approveTransfer(
-              ZERO_ADDRESS,
-              itemId,
-              layer,
-              {
-                from: user
-              }
-            ));
+        const itClearsApproval = function() {
+          it("clears approval for the item", async function() {
+            expect(await item.getApprovedTransfer(itemId, layer)).to.be.equal(
+              ZERO_ADDRESS
+            );
           });
+        };
 
-          itClearsApproval();
-          itEmitsApprovalEvent(ZERO_ADDRESS);
-        });
+        const itApproves = function(address) {
+          it("sets the approval for the target address", async function() {
+            expect(await item.getApprovedTransfer(itemId, layer)).to.be.equal(
+              address
+            );
+          });
+        };
 
-        context("when there was a prior approval", function() {
-          beforeEach(async function() {
-            await item.approveTransfer(approvedTransfer, itemId, layer, {
-              from: user
+        const itEmitsApprovalEvent = function(address) {
+          it("emits an approval event", async function() {
+            expectEvent.inLogs(logs, "Approval", {
+              owner: user,
+              approved: address,
+              itemId: itemId,
+              layer: layer
             });
-            ({ logs } = await item.approveTransfer(
-              ZERO_ADDRESS,
-              itemId,
-              layer,
-              {
-                from: user
-              }
-            ));
+          });
+        };
+
+        context("when clearing approval", function() {
+          context("when there was no prior approval", function() {
+            beforeEach(async function() {
+              ({ logs } = await item.approveTransfer(
+                ZERO_ADDRESS,
+                itemId,
+                layer,
+                {
+                  from: user
+                }
+              ));
+            });
+
+            itClearsApproval();
+            itEmitsApprovalEvent(ZERO_ADDRESS);
           });
 
-          itClearsApproval();
-          itEmitsApprovalEvent(ZERO_ADDRESS);
-        });
-      });
-
-      context("when approving a non-zero address", function() {
-        context("when there was no prior approval", function() {
-          beforeEach(async function() {
-            ({ logs } = await item.approveTransfer(
-              approvedTransfer,
-              itemId,
-              layer,
-              {
-                from: user
-              }
-            ));
-          });
-
-          itApproves(approvedTransfer);
-          itEmitsApprovalEvent(approvedTransfer);
-        });
-
-        context(
-          "when there was a prior approval to the same address",
-          function() {
+          context("when there was a prior approval", function() {
             beforeEach(async function() {
               await item.approveTransfer(approvedTransfer, itemId, layer, {
                 from: user
               });
+              ({ logs } = await item.approveTransfer(
+                ZERO_ADDRESS,
+                itemId,
+                layer,
+                {
+                  from: user
+                }
+              ));
+            });
+
+            itClearsApproval();
+            itEmitsApprovalEvent(ZERO_ADDRESS);
+          });
+        });
+
+        context("when approving a non-zero address", function() {
+          context("when there was no prior approval", function() {
+            beforeEach(async function() {
               ({ logs } = await item.approveTransfer(
                 approvedTransfer,
                 itemId,
@@ -1275,90 +1255,429 @@ contract("Item", accounts => {
 
             itApproves(approvedTransfer);
             itEmitsApprovalEvent(approvedTransfer);
+          });
+
+          context(
+            "when there was a prior approval to the same address",
+            function() {
+              beforeEach(async function() {
+                await item.approveTransfer(approvedTransfer, itemId, layer, {
+                  from: user
+                });
+                ({ logs } = await item.approveTransfer(
+                  approvedTransfer,
+                  itemId,
+                  layer,
+                  {
+                    from: user
+                  }
+                ));
+              });
+
+              itApproves(approvedTransfer);
+              itEmitsApprovalEvent(approvedTransfer);
+            }
+          );
+
+          context(
+            "when there was a prior approval to a different address",
+            function() {
+              beforeEach(async function() {
+                await item.approveTransfer(approvedTransfer2, itemId, layer, {
+                  from: user
+                });
+                ({ logs } = await item.approveTransfer(
+                  approvedTransfer2,
+                  itemId,
+                  layer,
+                  {
+                    from: user
+                  }
+                ));
+              });
+
+              itApproves(approvedTransfer2);
+              itEmitsApprovalEvent(approvedTransfer2);
+            }
+          );
+        });
+
+        context(
+          "when the address that receives the approval is the owner",
+          function() {
+            it("reverts", async function() {
+              await expectRevert.unspecified(
+                item.approveTransfer(owner, itemId, layer, { from: user })
+              );
+            });
           }
         );
 
         context(
-          "when there was a prior approval to a different address",
+          "when the address that receives the approval is the user",
           function() {
-            beforeEach(async function() {
-              await item.approveTransfer(approvedTransfer2, itemId, layer, {
+            it("reverts", async function() {
+              await expectRevert.unspecified(
+                item.approveTransfer(user, itemId, layer, { from: user })
+              );
+            });
+          }
+        );
+
+        context("when the sender does not own the given item ID", function() {
+          it("reverts", async function() {
+            await expectRevert.unspecified(
+              item.approveTransfer(approvedTransfer, itemId, layer, {
+                from: other
+              })
+            );
+          });
+        });
+
+        context(
+          "when the sender is approved for the given item ID",
+          function() {
+            it("reverts", async function() {
+              await item.approveTransfer(approvedTransfer, itemId, layer, {
                 from: user
               });
+              await expectRevert.unspecified(
+                item.approveTransfer(approvedTransfer2, itemId, layer, {
+                  from: approvedTransfer
+                })
+              );
+            });
+          }
+        );
+
+        context(
+          "when the sender is not owner nor user",
+          function() {
+            it("reverts", async function() {
+              await expectRevert.unspecified(
+                item.approveTransfer(approvedTransfer, itemId, layer, {
+                  from: other
+                })
+              );
+            });
+          }
+        );
+        
+        context(
+          "when the sender is the owner but tenant right has been set",
+          function() {
+            it("reverts", async function() {
+              await item.approveTenantRight(tenantRight, itemId, {
+                from: owner
+              });
+              await item.setTenantRight(itemId, {
+                from: tenantRight
+              });
+              await expectRevert.unspecified(
+                item.approveTransfer(other, itemId, layer, {
+                  from: owner
+                })
+              );
+            });
+          }
+        );
+
+        context(
+          "when the sender is an operator of the owner but tenant right has been set",
+          function() {
+            it("reverts", async function() {
+              await item.approveTenantRight(tenantRight, itemId, {
+                from: owner
+              });
+              await item.setTenantRight(itemId, {
+                from: tenantRight
+              });
+              await expectRevert.unspecified(
+                item.approveTransfer(other, itemId, layer, {
+                  from: operator2
+                })
+              );
+            });
+          }
+        );
+
+        context("when the sender is an operator of the user", function() {
+          beforeEach(async function() {
+            await item.setApprovalForAll(operator, true, { from: user });
+            ({ logs } = await item.approveTransfer(
+              approvedTransfer,
+              itemId,
+              layer,
+              {
+                from: operator
+              }
+            ));
+          });
+
+          itApproves(approvedTransfer);
+          itEmitsApprovalEvent(approvedTransfer);
+        });
+
+        context("when the sender is an operator of the owner", function() {
+          beforeEach(async function() {
+            await item.setApprovalForAll(operator2, true, { from: owner });
+            ({ logs } = await item.approveTransfer(
+              approvedTransfer,
+              itemId,
+              layer,
+              {
+                from: operator2
+              }
+            ));
+          });
+
+          itApproves(approvedTransfer);
+          itEmitsApprovalEvent(approvedTransfer);
+        });
+
+        context("when the given item ID does not exist", function() {
+          it("reverts", async function() {
+            await expectRevert.unspecified(
+              item.approveTransfer(approvedTransfer, nonExistentItemId, layer, {
+                from: operator
+              })
+            );
+          });
+        });
+      });
+
+      describe("For layer 2", function() {
+        const layer = new BN(2);
+
+        const itClearsApproval = function() {
+          it("clears approval for the item", async function() {
+            expect(await item.getApprovedTransfer(itemId, layer)).to.be.equal(
+              ZERO_ADDRESS
+            );
+          });
+        };
+
+        const itApproves = function(address) {
+          it("sets the approval for the target address", async function() {
+            expect(await item.getApprovedTransfer(itemId, layer)).to.be.equal(
+              address
+            );
+          });
+        };
+
+        const itEmitsApprovalEvent = function(address) {
+          it("emits an approval event", async function() {
+            expectEvent.inLogs(logs, "Approval", {
+              owner: owner,
+              approved: address,
+              itemId: itemId,
+              layer: layer
+            });
+          });
+        };
+
+        context("when clearing approval", function() {
+          context("when there was no prior approval", function() {
+            beforeEach(async function() {
               ({ logs } = await item.approveTransfer(
-                approvedTransfer2,
+                ZERO_ADDRESS,
                 itemId,
                 layer,
                 {
-                  from: user
+                  from: owner
                 }
               ));
             });
 
-            itApproves(approvedTransfer2);
-            itEmitsApprovalEvent(approvedTransfer2);
+            itClearsApproval();
+            itEmitsApprovalEvent(ZERO_ADDRESS);
+          });
+
+          context("when there was a prior approval", function() {
+            beforeEach(async function() {
+              await item.approveTransfer(approvedTransfer, itemId, layer, {
+                from: owner
+              });
+              ({ logs } = await item.approveTransfer(
+                ZERO_ADDRESS,
+                itemId,
+                layer,
+                {
+                  from: owner
+                }
+              ));
+            });
+
+            itClearsApproval();
+            itEmitsApprovalEvent(ZERO_ADDRESS);
+          });
+        });
+
+        context("when approving a non-zero address", function() {
+          context("when there was no prior approval", function() {
+            beforeEach(async function() {
+              ({ logs } = await item.approveTransfer(
+                approvedTransfer,
+                itemId,
+                layer,
+                {
+                  from: owner
+                }
+              ));
+            });
+
+            itApproves(approvedTransfer);
+            itEmitsApprovalEvent(approvedTransfer);
+          });
+
+          context(
+            "when there was a prior approval to the same address",
+            function() {
+              beforeEach(async function() {
+                await item.approveTransfer(approvedTransfer, itemId, layer, {
+                  from: owner
+                });
+                ({ logs } = await item.approveTransfer(
+                  approvedTransfer,
+                  itemId,
+                  layer,
+                  {
+                    from: owner
+                  }
+                ));
+              });
+
+              itApproves(approvedTransfer);
+              itEmitsApprovalEvent(approvedTransfer);
+            }
+          );
+
+          context(
+            "when there was a prior approval to a different address",
+            function() {
+              beforeEach(async function() {
+                await item.approveTransfer(approvedTransfer2, itemId, layer, {
+                  from: owner
+                });
+                ({ logs } = await item.approveTransfer(
+                  approvedTransfer2,
+                  itemId,
+                  layer,
+                  {
+                    from: owner
+                  }
+                ));
+              });
+
+              itApproves(approvedTransfer2);
+              itEmitsApprovalEvent(approvedTransfer2);
+            }
+          );
+        });
+
+        context(
+          "when the address that receives the approval is the owner",
+          function() {
+            it("reverts", async function() {
+              await expectRevert.unspecified(
+                item.approveTransfer(owner, itemId, layer, { from: owner })
+              );
+            });
           }
         );
-      });
 
-      context(
-        "when the address that receives the approval is the owner",
-        function() {
+        context(
+          "when the address that receives the approval is the user",
+          function() {
+            beforeEach(async function() {
+              ({ logs } = await item.approveTransfer(
+                user,
+                itemId,
+                layer,
+                {
+                  from: owner
+                }
+              ));
+            });
+            itApproves(user);
+            itEmitsApprovalEvent(user);
+          }
+        );
+
+        context("when the sender does not own the given item ID", function() {
           it("reverts", async function() {
             await expectRevert.unspecified(
-              item.approveTransfer(user, itemId, layer, { from: user })
+              item.approveTransfer(approvedTransfer, itemId, layer, {
+                from: other
+              })
             );
           });
-        }
-      );
-
-      context("when the sender does not own the given item ID", function() {
-        it("reverts", async function() {
-          await expectRevert.unspecified(
-            item.approveTransfer(approvedTransfer, itemId, layer, {
-              from: other
-            })
-          );
         });
-      });
 
-      context("when the sender is approved for the given item ID", function() {
-        it("reverts", async function() {
-          await item.approveTransfer(approvedTransfer, itemId, layer, {
-            from: user
+        context(
+          "when the sender is approved for the given item ID",
+          function() {
+            it("reverts", async function() {
+              await item.approveTransfer(approvedTransfer, itemId, layer, {
+                from: owner
+              });
+              await expectRevert.unspecified(
+                item.approveTransfer(approvedTransfer2, itemId, layer, {
+                  from: approvedTransfer
+                })
+              );
+            });
+          }
+        );
+
+        context(
+          "when the sender is not owner nor user",
+          function() {
+            it("reverts", async function() {
+              await expectRevert.unspecified(
+                item.approveTransfer(approvedTransfer, itemId, layer, {
+                  from: other
+                })
+              );
+            });
+          }
+        );
+        
+        context("when the sender is an operator of the user", function() {
+          it("reverts", async function() {
+            await expectRevert.unspecified(
+              item.approveTransfer(approvedTransfer, itemId, layer, {
+                from: operator
+              })
+            );
           });
-          await expectRevert.unspecified(
-            item.approveTransfer(approvedTransfer2, itemId, layer, {
-              from: approvedTransfer
-            })
-          );
-        });
-      });
-
-      context("when the sender is an operator", function() {
-        beforeEach(async function() {
-          await item.setApprovalForAll(operator, true, { from: user });
-          ({ logs } = await item.approveTransfer(
-            approvedTransfer,
-            itemId,
-            layer,
-            {
-              from: operator
-            }
-          ));
         });
 
-        itApproves(approvedTransfer);
-        itEmitsApprovalEvent(approvedTransfer);
-      });
+        context("when the sender is an operator of the owner", function() {
+          beforeEach(async function() {
+            await item.setApprovalForAll(operator2, true, { from: owner });
+            ({ logs } = await item.approveTransfer(
+              approvedTransfer,
+              itemId,
+              layer,
+              {
+                from: operator2
+              }
+            ));
+          });
 
-      context("when the given item ID does not exist", function() {
-        it("reverts", async function() {
-          await expectRevert.unspecified(
-            item.approveTransfer(approvedTransfer, nonExistentItemId, layer, {
-              from: operator
-            })
-          );
+          itApproves(approvedTransfer);
+          itEmitsApprovalEvent(approvedTransfer);
+        });
+
+        context("when the given item ID does not exist", function() {
+          it("reverts", async function() {
+            await expectRevert.unspecified(
+              item.approveTransfer(approvedTransfer, nonExistentItemId, layer, {
+                from: operator
+              })
+            );
+          });
         });
       });
     });
