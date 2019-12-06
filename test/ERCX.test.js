@@ -6,7 +6,6 @@ require("@openzeppelin/test-helpers/configure")({
 const {
   BN,
   constants,
-  balance,
   expectEvent,
   expectRevert
 } = require("@openzeppelin/test-helpers");
@@ -35,7 +34,9 @@ contract("Item", accounts => {
     operator,
     operator2,
     lien,
-    tenantRight
+    lien2,
+    tenantRight,
+    tenantRight2
   ] = accounts;
   const minter = creator;
 
@@ -68,7 +69,7 @@ contract("Item", accounts => {
         from: minter
       });
     });
-    /*
+
     describe("balanceOf in ERCX", function() {
       context(
         "when the given address owns some items in layer2 as ERCX",
@@ -130,7 +131,7 @@ contract("Item", accounts => {
       );
     });
 
-    describe("transfers in ERCX", function() {
+    describe("safeTransfer in ERCX", function() {
       const itemId = firstItemId;
       let logs = null;
 
@@ -1160,7 +1161,7 @@ contract("Item", accounts => {
         });
       });
     });
-*/
+
     describe("approve in ERCX", function() {
       const itemId = firstItemId;
       let logs = null;
@@ -1350,19 +1351,16 @@ contract("Item", accounts => {
           }
         );
 
-        context(
-          "when the sender is not owner nor user",
-          function() {
-            it("reverts", async function() {
-              await expectRevert.unspecified(
-                item.approveTransfer(approvedTransfer, itemId, layer, {
-                  from: other
-                })
-              );
-            });
-          }
-        );
-        
+        context("when the sender is not owner nor user", function() {
+          it("reverts", async function() {
+            await expectRevert.unspecified(
+              item.approveTransfer(approvedTransfer, itemId, layer, {
+                from: other
+              })
+            );
+          });
+        });
+
         context(
           "when the sender is the owner but tenant right has been set",
           function() {
@@ -1590,14 +1588,9 @@ contract("Item", accounts => {
           "when the address that receives the approval is the user",
           function() {
             beforeEach(async function() {
-              ({ logs } = await item.approveTransfer(
-                user,
-                itemId,
-                layer,
-                {
-                  from: owner
-                }
-              ));
+              ({ logs } = await item.approveTransfer(user, itemId, layer, {
+                from: owner
+              }));
             });
             itApproves(user);
             itEmitsApprovalEvent(user);
@@ -1630,19 +1623,16 @@ contract("Item", accounts => {
           }
         );
 
-        context(
-          "when the sender is not owner nor user",
-          function() {
-            it("reverts", async function() {
-              await expectRevert.unspecified(
-                item.approveTransfer(approvedTransfer, itemId, layer, {
-                  from: other
-                })
-              );
-            });
-          }
-        );
-        
+        context("when the sender is not owner nor user", function() {
+          it("reverts", async function() {
+            await expectRevert.unspecified(
+              item.approveTransfer(approvedTransfer, itemId, layer, {
+                from: other
+              })
+            );
+          });
+        });
+
         context("when the sender is an operator of the user", function() {
           it("reverts", async function() {
             await expectRevert.unspecified(
@@ -1711,7 +1701,7 @@ contract("Item", accounts => {
         });
       });
     });
-    /*
+
     describe("setApprovalForAll in ERCX & ERC721", function() {
       context(
         "when the operator willing to approve is not the owner",
@@ -1811,7 +1801,646 @@ contract("Item", accounts => {
         });
       });
     });
-  
+
+    describe("approveLien in ERCX", function() {
+      const itemId = firstItemId;
+      let logs = null;
+      const layer = new BN(2);
+
+      const itClearsApproval = function() {
+        it("clears approval for the item", async function() {
+          expect(await item.getApprovedLien(itemId)).to.be.equal(ZERO_ADDRESS);
+        });
+      };
+
+      const itApproves = function(address) {
+        it("sets the approval for the target address", async function() {
+          expect(await item.getApprovedLien(itemId)).to.be.equal(address);
+        });
+      };
+
+      context("when clearing approval", function() {
+        context("when there was no prior approval", function() {
+          beforeEach(async function() {
+            ({ logs } = await item.approveLien(ZERO_ADDRESS, itemId, {
+              from: owner
+            }));
+          });
+
+          itClearsApproval();
+        });
+
+        context("when there was a prior approval", function() {
+          beforeEach(async function() {
+            await item.approveLien(lien, itemId, {
+              from: owner
+            });
+            ({ logs } = await item.approveLien(ZERO_ADDRESS, itemId, {
+              from: owner
+            }));
+          });
+
+          itClearsApproval();
+        });
+      });
+
+      context("when approving a non-zero address", function() {
+        context("when there was no prior approval", function() {
+          beforeEach(async function() {
+            ({ logs } = await item.approveLien(lien, itemId, {
+              from: owner
+            }));
+          });
+
+          itApproves(lien);
+        });
+
+        context(
+          "when there was a prior approval to the same address",
+          function() {
+            beforeEach(async function() {
+              await item.approveLien(lien, itemId, {
+                from: owner
+              });
+              ({ logs } = await item.approveLien(lien, itemId, {
+                from: owner
+              }));
+            });
+
+            itApproves(lien);
+          }
+        );
+
+        context(
+          "when there was a prior approval to a different address",
+          function() {
+            beforeEach(async function() {
+              await item.approveLien(lien, itemId, {
+                from: owner
+              });
+              ({ logs } = await item.approveLien(lien2, itemId, {
+                from: owner
+              }));
+            });
+            itApproves(lien2);
+          }
+        );
+      });
+
+      context(
+        "when the address that receives the approval is the owner",
+        function() {
+          it("reverts", async function() {
+            await expectRevert.unspecified(
+              item.approveLien(owner, itemId, { from: owner })
+            );
+          });
+        }
+      );
+
+      context("when the sender is not owner nor user", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.approveLien(lien, itemId, {
+              from: other
+            })
+          );
+        });
+      });
+
+      context("when the sender is an operator of the owner", function() {
+        beforeEach(async function() {
+          await item.setApprovalForAll(operator2, true, { from: owner });
+          ({ logs } = await item.approveLien(lien, itemId, {
+            from: operator2
+          }));
+        });
+
+        itApproves(lien);
+      });
+
+      context("when the given item ID does not exist", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.approveLien(lien, nonExistentItemId, {
+              from: owner
+            })
+          );
+        });
+      });
+    });
+
+    describe("getApprovedLien in ERCX", async function() {
+      context("when item is not exist", async function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.getApprovedLien(nonExistentItemId)
+          );
+        });
+      });
+
+      context("when item has been minted ", async function() {
+        it("should return the zero address", async function() {
+          expect(await item.getApprovedLien(firstItemId)).to.be.equal(
+            ZERO_ADDRESS
+          );
+        });
+
+        context("when account has been approvedlien", async function() {
+          beforeEach(async function() {
+            await item.approveLien(lien, firstItemId, {
+              from: owner
+            });
+          });
+
+          it("should return approvedTransfer account", async function() {
+            expect(await item.getApprovedLien(firstItemId)).to.be.equal(lien);
+          });
+        });
+      });
+    });
+
+    describe("setLien in ERCX", function() {
+      const itemId = firstItemId;
+      let logs = null;
+
+      const itSets = function(address) {
+        it("sets the approval for the target address", async function() {
+          expect(await item.getCurrentLien(itemId)).to.be.equal(address);
+        });
+      };
+
+      const itEmitsSetEvent = function(address) {
+        it("emits an approval event", async function() {
+          expectEvent.inLogs(logs, "LienSet", {
+            attn: address,
+            itemId: itemId,
+            status: true
+          });
+        });
+      };
+
+      const itClearsApprovedLien = function() {
+        it("clears approval for the item", async function() {
+          expect(await item.getApprovedLien(itemId)).to.be.equal(ZERO_ADDRESS);
+        });
+      };
+
+      context("when the sender is not approved", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.setLien(lien, {
+              from: other
+            })
+          );
+        });
+      });
+
+      context("when the sender is approved lien", function() {
+        beforeEach(async function() {
+          await item.approveLien(lien, itemId, { from: owner });
+          ({ logs } = await item.setLien(itemId, {
+            from: lien
+          }));
+        });
+        itSets(lien);
+        itEmitsSetEvent(lien);
+        itClearsApprovedLien();
+      });
+
+      context("when the given item ID does not exist", function() {
+        beforeEach(async function() {
+          await item.approveLien(lien, itemId, { from: owner });
+        });
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.setLien(nonExistentItemId, {
+              from: lien
+            })
+          );
+        });
+      });
+    });
+
+    describe("revokeLien in ERCX", function() {
+      const itemId = firstItemId;
+      let logs = null;
+
+      const itClears = function() {
+        it("clears approval for the item", async function() {
+          expect(await item.getCurrentLien(itemId)).to.be.equal(ZERO_ADDRESS);
+        });
+      };
+
+      const itEmitsSetEvent = function(address) {
+        it("emits an approval event", async function() {
+          expectEvent.inLogs(logs, "LienSet", {
+            attn: ZERO_ADDRESS,
+            itemId: itemId,
+            status: false
+          });
+        });
+      };
+
+      context("when the sender is not current lien", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.revokeLien(lien, {
+              from: other
+            })
+          );
+        });
+      });
+
+      context("when the sender is current lien", function() {
+        beforeEach(async function() {
+          await item.approveLien(lien, itemId, { from: owner });
+          await item.setLien(itemId, { from: lien });
+          ({ logs } = await item.revokeLien(itemId, {
+            from: lien
+          }));
+        });
+        itClears();
+        itEmitsSetEvent(lien);
+      });
+
+      context("when the given item ID does not exist", function() {
+        beforeEach(async function() {
+          await item.approveLien(lien, itemId, { from: owner });
+          await item.setLien(itemId, { from: lien });
+        });
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.revokeLien(nonExistentItemId, {
+              from: lien
+            })
+          );
+        });
+      });
+    });
+
+    describe("getCurrentLien in ERCX", async function() {
+      context("when item is not exist", async function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.getCurrentLien(nonExistentItemId)
+          );
+        });
+      });
+
+      context("when item exists ", async function() {
+        it("should return the zero address", async function() {
+          expect(await item.getCurrentLien(firstItemId)).to.be.equal(
+            ZERO_ADDRESS
+          );
+        });
+
+        context("when account has been approvedlien", async function() {
+          beforeEach(async function() {
+            await item.approveLien(lien, firstItemId, {
+              from: owner
+            });
+            await item.setLien(firstItemId, {
+              from: lien
+            });
+          });
+
+          it("should return approvedTransfer account", async function() {
+            expect(await item.getCurrentLien(firstItemId)).to.be.equal(lien);
+          });
+        });
+      });
+    });
+
+    describe("approveTenantRight in ERCX", function() {
+      const itemId = firstItemId;
+      let logs = null;
+
+      const itClearsApproval = function() {
+        it("clears approval for the item", async function() {
+          expect(await item.getApprovedTenantRight(itemId)).to.be.equal(
+            ZERO_ADDRESS
+          );
+        });
+      };
+
+      const itApproves = function(address) {
+        it("sets the approval for the target address", async function() {
+          expect(await item.getApprovedTenantRight(itemId)).to.be.equal(
+            address
+          );
+        });
+      };
+
+      context("when clearing approval", function() {
+        context("when there was no prior approval", function() {
+          beforeEach(async function() {
+            ({ logs } = await item.approveTenantRight(ZERO_ADDRESS, itemId, {
+              from: owner
+            }));
+          });
+
+          itClearsApproval();
+        });
+
+        context("when there was a prior approval", function() {
+          beforeEach(async function() {
+            await item.approveTenantRight(tenantRight, itemId, {
+              from: owner
+            });
+            ({ logs } = await item.approveTenantRight(ZERO_ADDRESS, itemId, {
+              from: owner
+            }));
+          });
+
+          itClearsApproval();
+        });
+      });
+
+      context("when approving a non-zero address", function() {
+        context("when there was no prior approval", function() {
+          beforeEach(async function() {
+            ({ logs } = await item.approveTenantRight(tenantRight, itemId, {
+              from: owner
+            }));
+          });
+
+          itApproves(tenantRight);
+        });
+
+        context(
+          "when there was a prior approval to the same address",
+          function() {
+            beforeEach(async function() {
+              await item.approveTenantRight(tenantRight, itemId, {
+                from: owner
+              });
+              ({ logs } = await item.approveTenantRight(tenantRight, itemId, {
+                from: owner
+              }));
+            });
+
+            itApproves(tenantRight);
+          }
+        );
+
+        context(
+          "when there was a prior approval to a different address",
+          function() {
+            beforeEach(async function() {
+              await item.approveTenantRight(tenantRight, itemId, {
+                from: owner
+              });
+              ({ logs } = await item.approveTenantRight(tenantRight2, itemId, {
+                from: owner
+              }));
+            });
+            itApproves(tenantRight2);
+          }
+        );
+      });
+
+      context(
+        "when the address that receives the approval is the owner",
+        function() {
+          it("reverts", async function() {
+            await expectRevert.unspecified(
+              item.approveTenantRight(owner, itemId, { from: owner })
+            );
+          });
+        }
+      );
+
+      context("when the sender is not owner nor user", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.approveTenantRight(tenantRight, itemId, {
+              from: other
+            })
+          );
+        });
+      });
+
+      context("when the sender is an operator of the owner", function() {
+        beforeEach(async function() {
+          await item.setApprovalForAll(operator2, true, { from: owner });
+          ({ logs } = await item.approveTenantRight(tenantRight, itemId, {
+            from: operator2
+          }));
+        });
+
+        itApproves(tenantRight);
+      });
+
+      context("when the given item ID does not exist", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.approveTenantRight(tenantRight, nonExistentItemId, {
+              from: owner
+            })
+          );
+        });
+      });
+    });
+
+    describe("getApprovedTenantRight in ERCX", async function() {
+      context("when item is not exist", async function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.getApprovedTenantRight(nonExistentItemId)
+          );
+        });
+      });
+
+      context("when item existed ", async function() {
+        it("should return the zero address", async function() {
+          expect(await item.getApprovedTenantRight(firstItemId)).to.be.equal(
+            ZERO_ADDRESS
+          );
+        });
+
+        context("when account has been approvedTenantRight", async function() {
+          beforeEach(async function() {
+            await item.approveTenantRight(tenantRight, firstItemId, {
+              from: owner
+            });
+          });
+          it("should return approvedTransfer account", async function() {
+            expect(await item.getApprovedTenantRight(firstItemId)).to.be.equal(
+              tenantRight
+            );
+          });
+        });
+      });
+    });
+
+    describe("setTenantRight in ERCX", function() {
+      const itemId = firstItemId;
+      let logs = null;
+
+      const itSets = function(address) {
+        it("sets the approval for the target address", async function() {
+          expect(await item.getCurrentTenantRight(itemId)).to.be.equal(address);
+        });
+      };
+
+      const itEmitsSetEvent = function(address) {
+        it("emits an approval event", async function() {
+          expectEvent.inLogs(logs, "TenantRightSet", {
+            attn: address,
+            itemId: itemId,
+            status: true
+          });
+        });
+      };
+
+      const itClearsApprovalTransfer = function() {
+        it("clears approval for the transfer of the item of layer 1", async function() {
+          expect(await item.getApprovedTransfer(itemId, 1)).to.be.equal(
+            ZERO_ADDRESS
+          );
+        });
+      };
+
+      const itClearsApprovedTenantRight = function() {
+        it("clears approval for the item", async function() {
+          expect(await item.getApprovedTenantRight(itemId)).to.be.equal(
+            ZERO_ADDRESS
+          );
+        });
+      };
+
+      context("when the sender is not approved", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.setTenantRight(tenantRight, {
+              from: other
+            })
+          );
+        });
+      });
+
+      context("when the sender is approvedTenantRight", function() {
+        beforeEach(async function() {
+          await item.approveTenantRight(tenantRight, itemId, { from: owner });
+          ({ logs } = await item.setTenantRight(itemId, {
+            from: tenantRight
+          }));
+        });
+        itSets(tenantRight);
+        itEmitsSetEvent(tenantRight);
+        itClearsApprovedTenantRight();
+        itClearsApprovalTransfer();
+      });
+
+      context("when the given item ID does not exist", function() {
+        beforeEach(async function() {
+          await item.approveTenantRight(tenantRight, itemId, { from: owner });
+        });
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.setTenantRight(nonExistentItemId, {
+              from: tenantRight
+            })
+          );
+        });
+      });
+    });
+
+    describe("revokeTenantRight in ERCX", function() {
+      const itemId = firstItemId;
+      let logs = null;
+
+      const itClears = function() {
+        it("clears approval for the item", async function() {
+          expect(await item.getCurrentTenantRight(itemId)).to.be.equal(
+            ZERO_ADDRESS
+          );
+        });
+      };
+
+      const itEmitsSetEvent = function(address) {
+        it("emits an approval event", async function() {
+          expectEvent.inLogs(logs, "TenantRightSet", {
+            attn: ZERO_ADDRESS,
+            itemId: itemId,
+            status: false
+          });
+        });
+      };
+
+      context("when the sender is not current lien", function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.revokeTenantRight(tenantRight, {
+              from: other
+            })
+          );
+        });
+      });
+
+      context("when the sender is current lien", function() {
+        beforeEach(async function() {
+          await item.approveTenantRight(tenantRight, itemId, { from: owner });
+          await item.setTenantRight(itemId, { from: tenantRight });
+          ({ logs } = await item.revokeTenantRight(itemId, {
+            from: tenantRight
+          }));
+        });
+        itClears();
+        itEmitsSetEvent(tenantRight);
+      });
+
+      context("when the given item ID does not exist", function() {
+        beforeEach(async function() {
+          await item.approveTenantRight(tenantRight, itemId, { from: owner });
+          await item.setTenantRight(itemId, { from: tenantRight });
+        });
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.revokeTenantRight(nonExistentItemId, {
+              from: tenantRight
+            })
+          );
+        });
+      });
+    });
+
+    describe("getCurrentTenantRight in ERCX", async function() {
+      context("when item is not exist", async function() {
+        it("reverts", async function() {
+          await expectRevert.unspecified(
+            item.getCurrentTenantRight(nonExistentItemId)
+          );
+        });
+      });
+
+      context("when item exists ", async function() {
+        it("should return the zero address", async function() {
+          expect(await item.getCurrentTenantRight(firstItemId)).to.be.equal(
+            ZERO_ADDRESS
+          );
+        });
+
+        context("when account has been approvedlien", async function() {
+          beforeEach(async function() {
+            await item.approveTenantRight(tenantRight, firstItemId, {
+              from: owner
+            });
+            await item.setTenantRight(firstItemId, {
+              from: tenantRight
+            });
+          });
+
+          it("should return approvedTenantRight account", async function() {
+            expect(await item.getCurrentTenantRight(firstItemId)).to.be.equal(
+              tenantRight
+            );
+          });
+        });
+      });
+    });
+
     describe("balanceOf in ERC721", function() {
       context("when the given address owns some items as ERC721", function() {
         it("returns the amount of items owned by the given address", async function() {
@@ -2622,6 +3251,5 @@ contract("Item", accounts => {
         });
       });
     });
-      */
   });
 });
