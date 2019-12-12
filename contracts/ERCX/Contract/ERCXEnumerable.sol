@@ -38,7 +38,7 @@ contract ERCXEnumerable is ERC165, ERCX, IERCXEnumerable {
    * @return uint256 item ID at the given index of the items list owned by the requested address
    */
    
-  function itemOfOwnerByIndex(address owner, uint256 index, uint256 layer) public view returns (uint256){
+  function itemOfOwnerByIndex(address owner, uint256 layer, uint256 index) public view returns (uint256){
     require(index < balanceOf(owner,layer));
     return _ownedItems[layer][owner][index];
   }
@@ -99,18 +99,21 @@ contract ERCXEnumerable is ERC165, ERCX, IERCXEnumerable {
     * @param itemId uint256 ID of the item being burned
     */
   function _burn(uint256 itemId) internal {
+      address owner1 = addressOf(itemId, 1);
+      address owner2 = addressOf(itemId, 2);
+      
       super._burn(itemId);
-
-      address owner1 = ownerOf(itemId, 1);
-      address owner2 = ownerOf(itemId, 2);
 
       _removeItemFromOwnerEnumeration(owner1, itemId, 1);
       _removeItemFromOwnerEnumeration(owner2, itemId, 2);
+    
+  
       // Since itemId will be deleted, we can clear its slot in _ownedItemsIndex to trigger a gas refund
       _ownedItemsIndex[1][itemId] = 0;
       _ownedItemsIndex[2][itemId] = 0;
 
       _removeItemFromAllItemsEnumeration(itemId);
+
   }
 
   /**

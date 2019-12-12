@@ -112,6 +112,7 @@ contract ERCXMetadata is ERC165, ERCX, IERCXMetadata {
     if (bytes(_itemURIs[itemId]).length != 0) {
       delete _itemURIs[itemId];
     }
+
   }
 }
 

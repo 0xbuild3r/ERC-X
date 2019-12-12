@@ -22,24 +22,29 @@ contract ERCX721fier is ERC165, IERC721, ERCX {
   }
 
   function balanceOf(address owner) public view returns (uint256) {
-      return balanceOf(owner, 1);
+      return balanceOf(owner, 2);
   }
 
   function ownerOf(uint256 itemId) public view returns (address) {
-      return ownerOf(itemId, 1);
+      return addressOf(itemId, 2);
   }
 
   function approve(address to, uint256 itemId) public {
-      approveTransfer(to, itemId, 1);
+      approveTransfer(to, itemId, 2);
   }
 
   function getApproved(uint256 itemId) public view returns (address) {
-      return getApprovedTransfer(itemId, 1);
+      return getApprovedTransfer(itemId, 2);
   }
 
   function transferFrom(address from, address to, uint256 itemId) public {
-      require(_isEligibleForTransfer(msg.sender, itemId, 1));
-      _transfer(from, to, itemId,1);
+      require(_isEligibleForTransfer(msg.sender, itemId, 2));
+      if(getCurrentTenantRight(itemId) == address(0) ){
+        _transfer(from, to, itemId,1);
+        _transfer(from, to, itemId,2);
+      }else{
+        _transfer(from, to, itemId,2);
+      }
   }
 
   function safeTransferFrom(address from, address to, uint256 itemId) public {

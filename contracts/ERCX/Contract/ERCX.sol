@@ -44,7 +44,7 @@ contract ERCX is ERC165, IERCX {
 
   bytes4 private constant _InterfaceId_ERCX = 
     bytes4(keccak256("balanceOf(address, uint256)")) ^
-    bytes4(keccak256("ownerOf(uint256, uint256)")) ^
+    bytes4(keccak256("addressOf(uint256, uint256)")) ^
     bytes4(keccak256("safeTransferFrom(address, address, uint256, uint256)")) ^
     bytes4(keccak256("safeTransferFrom(address, address, uint256, uint256, bytes)")) ^
     bytes4(keccak256("approveTransfer(address, uint256, uint256)")) ^
@@ -81,7 +81,7 @@ contract ERCX is ERC165, IERCX {
    * @param layer uint256 number to specify the layer
    * @return owner address currently marked as the owner of the given item ID in the specified layer
    */
-  function ownerOf(uint256 itemId, uint256 layer) public view returns (address) {
+  function addressOf(uint256 itemId, uint256 layer) public view returns (address) {
     address owner = _itemOwner[itemId][layer];
     require(owner != address(0));
     return owner;
@@ -98,8 +98,8 @@ contract ERCX is ERC165, IERCX {
    */
   function approveTransfer(address to, uint256 itemId, uint256 layer) public {
 
-    address user = ownerOf(itemId, 1);
-    address owner = ownerOf(itemId, 2);
+    address user = addressOf(itemId, 1);
+    address owner = addressOf(itemId, 2);
 
     if(layer == 1){
       require(to != owner && to != user);
@@ -168,7 +168,7 @@ contract ERCX is ERC165, IERCX {
    * @param itemId uint256 ID of the item to be approved
    */
   function approveLien(address to, uint256 itemId) public {
-    address owner = ownerOf(itemId, 2);
+    address owner = addressOf(itemId, 2);
     require(to != owner );
     require(msg.sender == owner || isApprovedForAll(owner, msg.sender));
     _lienApprovals[itemId] = to;
@@ -226,7 +226,7 @@ contract ERCX is ERC165, IERCX {
    * @param itemId uint256 ID of the item to be approved
    */
   function approveTenantRight(address to, uint256 itemId) public {
-    address owner = ownerOf(itemId, 2);
+    address owner = addressOf(itemId, 2);
     require(to != owner );
     require(msg.sender == owner || isApprovedForAll(owner, msg.sender));
    _tenantRightApprovals[itemId] = to;
@@ -356,8 +356,8 @@ contract ERCX is ERC165, IERCX {
   function _isEligibleForTransfer(address spender, uint256 itemId, uint256 layer) internal view returns (bool) {
     require(_exists(itemId, layer));
     if(layer == 1){
-      address user = ownerOf(itemId, 1);
-      address owner = ownerOf(itemId, 2);
+      address user = addressOf(itemId, 1);
+      address owner = addressOf(itemId, 2);
       require(
         spender == user ||
         spender == owner ||
@@ -373,7 +373,7 @@ contract ERCX is ERC165, IERCX {
     }
   
     if(layer == 2){
-      address owner = ownerOf(itemId, 2);
+      address owner = addressOf(itemId, 2);
       require(
         spender == owner ||
         isApprovedForAll(owner,spender) ||
@@ -454,11 +454,9 @@ contract ERCX is ERC165, IERCX {
     */
   function _burn(uint256 itemId) internal {
     
-    require(_isEligibleForTransfer(msg.sender, itemId, 1));
-    require(_isEligibleForTransfer(msg.sender, itemId, 2));
-
-    address owner1 = ownerOf(itemId, 1);
-    address owner2 = ownerOf(itemId, 2);
+    address owner1 = addressOf(itemId, 1);
+    address owner2 = addressOf(itemId, 2);
+    require(owner1 == msg.sender && owner2 == msg.sender);
 
       _clearTransferApproval(itemId,1);
       _clearTransferApproval(itemId,2);
@@ -481,7 +479,7 @@ contract ERCX is ERC165, IERCX {
     * @param layer uint256 number to specify the layer
     */
   function _transfer(address from, address to, uint256 itemId, uint256 layer) internal {
-      require( ownerOf(itemId,layer) == from );
+      require( addressOf(itemId,layer) == from );
       require(to != address(0));
 
       _clearTransferApproval(itemId, layer);

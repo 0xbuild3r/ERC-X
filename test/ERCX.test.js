@@ -69,7 +69,7 @@ contract("Item", accounts => {
         from: minter
       });
     });
-
+    
     describe("balanceOf in ERCX", function() {
       context(
         "when the given address owns some items in layer2 as ERCX",
@@ -102,11 +102,11 @@ contract("Item", accounts => {
       });
     });
 
-    describe("ownerOf in ERCX", function() {
+    describe("addressOf in ERCX", function() {
       context("when the given item ID was tracked by this item", function() {
         const itemId = firstItemId;
         it("returns the owner of the given item ID ERCX in layer2", async function() {
-          expect(await item.ownerOf(itemId, 2)).to.be.equal(owner);
+          expect(await item.addressOf(itemId, 2)).to.be.equal(owner);
         });
       });
 
@@ -115,7 +115,7 @@ contract("Item", accounts => {
         function() {
           const itemId = nonExistentItemId;
           it("reverts", async function() {
-            await expectRevert.unspecified(item.ownerOf(itemId, 2));
+            await expectRevert.unspecified(item.addressOf(itemId, 2));
           });
         }
       );
@@ -124,8 +124,8 @@ contract("Item", accounts => {
         "when the given item ID was tracked by this item but layer was higher than 2",
         function() {
           const itemId = firstItemId;
-          it("returns the owner of the given item ID ERCX in layer3", async function() {
-            await expectRevert.unspecified(await item.ownerOf(itemId, 3));
+          it("reverts", async function() {
+            await expectRevert.unspecified(item.addressOf(itemId, 3));
           });
         }
       );
@@ -159,7 +159,7 @@ contract("Item", accounts => {
           approvedTransfer
         }) {
           it("transfers the ownership of the given item ID to the given address", async function() {
-            expect(await item.ownerOf(itemId, 1)).to.be.equal(other);
+            expect(await item.addressOf(itemId, 1)).to.be.equal(other);
           });
 
           it("clears the approval for the item ID", async function() {
@@ -198,11 +198,11 @@ contract("Item", accounts => {
             if (!item.itemOfOwnerByIndex) return;
 
             expect(
-              await item.itemOfOwnerByIndex(other, 0, layer)
+              await item.itemOfOwnerByIndex(other,layer, 0)
             ).to.be.bignumber.equal(itemId);
 
             expect(
-              await item.itemOfOwnerByIndex(user, 0, layer)
+              await item.itemOfOwnerByIndex(user,layer,0)
             ).to.be.bignumber.not.equal(itemId);
           });
         };
@@ -362,7 +362,7 @@ contract("Item", accounts => {
             });
 
             it("keeps ownership of the item", async function() {
-              expect(await item.ownerOf(itemId, layer)).to.be.equal(user);
+              expect(await item.addressOf(itemId, layer)).to.be.equal(user);
             });
 
             it("clears the approval for the item ID", async function() {
@@ -389,7 +389,7 @@ contract("Item", accounts => {
             it("keeps same items by index", async function() {
               if (!item.itemOfOwnerByIndex) return;
               const itemsListed = await Promise.all(
-                [0, 1].map(i => item.itemOfOwnerByIndex(user, i, layer))
+                [0, 1].map(i => item.itemOfOwnerByIndex(user,layer,i))
               );
               expect(itemsListed.map(t => t.toNumber())).to.have.members([
                 firstItemId.toNumber(),
@@ -699,7 +699,7 @@ contract("Item", accounts => {
           approvedTransfer
         }) {
           it("transfers the ownership of the given item ID to the given address", async function() {
-            expect(await item.ownerOf(itemId, layer)).to.be.equal(other);
+            expect(await item.addressOf(itemId, layer)).to.be.equal(other);
           });
 
           it("clears the approval for the item ID", async function() {
@@ -738,11 +738,11 @@ contract("Item", accounts => {
             if (!item.itemOfOwnerByIndex) return;
 
             expect(
-              await item.itemOfOwnerByIndex(other, 0, layer)
+              await item.itemOfOwnerByIndex(other, layer, 0)
             ).to.be.bignumber.equal(itemId);
 
             expect(
-              await item.itemOfOwnerByIndex(owner, 0, layer)
+              await item.itemOfOwnerByIndex(owner, layer, 0)
             ).to.be.bignumber.not.equal(itemId);
           });
         };
@@ -864,7 +864,7 @@ contract("Item", accounts => {
             });
 
             it("keeps ownership of the item", async function() {
-              expect(await item.ownerOf(itemId, layer)).to.be.equal(owner);
+              expect(await item.addressOf(itemId, layer)).to.be.equal(owner);
             });
 
             it("clears the approval for the item ID", async function() {
@@ -891,7 +891,7 @@ contract("Item", accounts => {
             it("keeps same items by index", async function() {
               if (!item.itemOfOwnerByIndex) return;
               const itemsListed = await Promise.all(
-                [0, 1].map(i => item.itemOfOwnerByIndex(owner, i, layer))
+                [0, 1].map(i => item.itemOfOwnerByIndex(owner, layer, i))
               );
               expect(itemsListed.map(t => t.toNumber())).to.have.members([
                 firstItemId.toNumber(),
@@ -1161,7 +1161,7 @@ contract("Item", accounts => {
         });
       });
     });
-
+    
     describe("approve in ERCX", function() {
       const itemId = firstItemId;
       let logs = null;
@@ -1351,7 +1351,7 @@ contract("Item", accounts => {
           }
         );
 
-        context("when the sender is not owner nor user", function() {
+        context("when the sender is neither owner nor user", function() {
           it("reverts", async function() {
             await expectRevert.unspecified(
               item.approveTransfer(approvedTransfer, itemId, layer, {
@@ -1623,7 +1623,7 @@ contract("Item", accounts => {
           }
         );
 
-        context("when the sender is not owner nor user", function() {
+        context("when the sender is neither owner nor user", function() {
           it("reverts", async function() {
             await expectRevert.unspecified(
               item.approveTransfer(approvedTransfer, itemId, layer, {
@@ -1898,7 +1898,7 @@ contract("Item", accounts => {
         }
       );
 
-      context("when the sender is not owner nor user", function() {
+      context("when the sender is neither owner nor user", function() {
         it("reverts", async function() {
           await expectRevert.unspecified(
             item.approveLien(lien, itemId, {
@@ -2211,7 +2211,7 @@ contract("Item", accounts => {
         }
       );
 
-      context("when the sender is not owner nor user", function() {
+      context("when the sender is neither owner nor user", function() {
         it("reverts", async function() {
           await expectRevert.unspecified(
             item.approveTenantRight(tenantRight, itemId, {
@@ -2531,28 +2531,55 @@ contract("Item", accounts => {
           if (!item.itemOfOwnerByIndex) return;
 
           expect(
-            await item.itemOfOwnerByIndex(other, 0, 1)
+            await item.itemOfOwnerByIndex(other, 2, 0)
           ).to.be.bignumber.equal(itemId);
 
           expect(
-            await item.itemOfOwnerByIndex(owner, 0, 1)
+            await item.itemOfOwnerByIndex(owner, 2, 0)
           ).to.be.bignumber.not.equal(itemId);
         });
       };
 
       const shouldTransferItemsByUsers721 = function(transferFunction) {
-        context("when called by the owner", function() {
-          beforeEach(async function() {
-            ({ logs } = await transferFunction.call(
-              this,
-              owner,
-              other,
-              itemId,
-              { from: owner }
-            ));
-          });
-          transferWasSuccessful721({ owner, itemId, approvedTransfer });
-        });
+        context(
+          "when called by the owner when tenant right isn't set",
+          function() {
+            beforeEach(async function() {
+              ({ logs } = await transferFunction.call(
+                this,
+                owner,
+                other,
+                itemId,
+                { from: owner }
+              ));
+            });
+            transferWasSuccessful721({ owner, itemId, approvedTransfer });
+            it("layer 1 has been also transferred ", async function() {
+              expect(await item.balanceOf(owner, 1)).to.be.bignumber.equal("1");
+            });
+          }
+        );
+
+        context(
+          "when called by the owner when tenant right is set",
+          function() {
+            beforeEach(async function() {
+              item.approveTenantRight(tenantRight, itemId, { from: owner });
+              item.setTenantRight(itemId, { from: tenantRight });
+              ({ logs } = await transferFunction.call(
+                this,
+                owner,
+                other,
+                itemId,
+                { from: owner }
+              ));
+            });
+            transferWasSuccessful721({ owner, itemId, approvedTransfer });
+            it("layer 1 has not been transferred ", async function() {
+              expect(await item.balanceOf(owner, 1)).to.be.bignumber.equal("2");
+            });
+          }
+        );
 
         context("when called by the approvedTransfer individual", function() {
           beforeEach(async function() {
@@ -2635,7 +2662,7 @@ contract("Item", accounts => {
           it("keeps same items by index", async function() {
             if (!item.itemOfOwnerByIndex) return;
             const itemsListed = await Promise.all(
-              [0, 1].map(i => item.itemOfOwnerByIndex(owner, i, 1))
+              [0, 1].map(i => item.itemOfOwnerByIndex(owner, 1, i))
             );
             expect(itemsListed.map(t => t.toNumber())).to.have.members([
               firstItemId.toNumber(),
@@ -3086,7 +3113,6 @@ contract("Item", accounts => {
 
         it("items with URI can be burnt ", async function() {
           await item.setItemURI(firstItemId, sampleUri);
-
           await item.burn(firstItemId, { from: owner });
 
           expect(await item.exists(firstItemId)).to.equal(false);
@@ -3105,20 +3131,20 @@ contract("Item", accounts => {
       describe("when the given index is lower than the amount of items owned by the given address", function() {
         it("returns the item ID placed at the given index", async function() {
           expect(
-            await item.itemOfOwnerByIndex(owner, 1, 0)
+            await item.itemOfOwnerByIndex(owner, 2, 0)
           ).to.be.bignumber.equal(firstItemId);
         });
       });
 
       describe("when the index is greater than or equal to the total items owned by the given address", function() {
         it("reverts", async function() {
-          await expectRevert.unspecified(item.itemOfOwnerByIndex(owner, 1, 10));
+          await expectRevert.unspecified(item.itemOfOwnerByIndex(owner, 2, 10));
         });
       });
 
       describe("when the given address does not own any item", function() {
         it("reverts", async function() {
-          await expectRevert.unspecified(item.itemOfOwnerByIndex(other, 1, 0));
+          await expectRevert.unspecified(item.itemOfOwnerByIndex(other, 2, 0));
         });
       });
     });
@@ -3177,7 +3203,7 @@ contract("Item", accounts => {
         });
 
         it("assigns the item to the new owner", async function() {
-          expect(await item.ownerOf(thirdItemId, 1)).to.equal(newOwner);
+          expect(await item.addressOf(thirdItemId, 1)).to.equal(newOwner);
         });
 
         it("increases the balance of its owner", async function() {
@@ -3251,5 +3277,6 @@ contract("Item", accounts => {
         });
       });
     });
+    
   });
 });

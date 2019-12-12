@@ -10,7 +10,7 @@ contract IERCX is IERC165 {
   event TenantRightSet(address indexed attn, uint256 indexed itemId, bool status);
 
   function balanceOf(address owner, uint256 layer) public view returns (uint256);
-  function ownerOf(uint256 itemId, uint256 layer) public view returns (address);
+  function addressOf(uint256 itemId, uint256 layer) public view returns (address);
 
   function safeTransfer(address from, address to, uint256 itemId, uint256 layer) public;
   function safeTransfer(address from, address to, uint256 itemId, uint256 layer, bytes memory data) public;
