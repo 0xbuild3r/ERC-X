@@ -192,7 +192,7 @@ contract ERCX is ERC165, IERCX {
   function setLien(uint256 itemId) public {
     require(msg.sender == getApprovedLien(itemId));
     _lienAddress[itemId] = msg.sender;
-    _lienApprovals[itemId] = address(0);
+    _clearLienApproval(itemId);
     emit LienSet(msg.sender, itemId, true);
   }
 
@@ -250,7 +250,7 @@ contract ERCX is ERC165, IERCX {
   function setTenantRight(uint256 itemId) public {
     require(msg.sender == getApprovedTenantRight(itemId));
     _tenantRightAddress[itemId] = msg.sender;
-    _tenantRightApprovals[itemId] = address(0);
+    _clearTenantRightApproval(itemId);
     _clearTransferApproval(itemId,1); //Reset transfer approval
     emit TenantRightSet(msg.sender, itemId, true);
   }
@@ -484,6 +484,11 @@ contract ERCX is ERC165, IERCX {
 
       _clearTransferApproval(itemId, layer);
 
+      if(layer == 2){
+        _clearLienApproval(itemId);
+        _clearTenantRightApproval(itemId);
+      }
+
       _ownedItemsCount[from][layer].decrement();
       _ownedItemsCount[to][layer].increment();
 
@@ -523,6 +528,18 @@ contract ERCX is ERC165, IERCX {
   function _clearTransferApproval(uint256 itemId, uint256 layer) private {
       if (_transferApprovals[itemId][layer] != address(0)) {
           _transferApprovals[itemId][layer] = address(0);
+      }
+  }
+
+  function _clearTenantRightApproval(uint256 itemId) private {
+      if (_tenantRightApprovals[itemId] != address(0)) {
+          _tenantRightApprovals[itemId] = address(0);
+      }
+  }
+
+  function _clearLienApproval(uint256 itemId) private {
+      if (_lienApprovals[itemId] != address(0)) {
+          _lienApprovals[itemId] = address(0);
       }
   }
 

@@ -69,7 +69,7 @@ contract("Item", accounts => {
         from: minter
       });
     });
-    
+
     describe("balanceOf in ERCX", function() {
       context(
         "when the given address owns some items in layer2 as ERCX",
@@ -198,11 +198,11 @@ contract("Item", accounts => {
             if (!item.itemOfOwnerByIndex) return;
 
             expect(
-              await item.itemOfOwnerByIndex(other,layer, 0)
+              await item.itemOfOwnerByIndex(other, layer, 0)
             ).to.be.bignumber.equal(itemId);
 
             expect(
-              await item.itemOfOwnerByIndex(user,layer,0)
+              await item.itemOfOwnerByIndex(user, layer, 0)
             ).to.be.bignumber.not.equal(itemId);
           });
         };
@@ -389,7 +389,7 @@ contract("Item", accounts => {
             it("keeps same items by index", async function() {
               if (!item.itemOfOwnerByIndex) return;
               const itemsListed = await Promise.all(
-                [0, 1].map(i => item.itemOfOwnerByIndex(user,layer,i))
+                [0, 1].map(i => item.itemOfOwnerByIndex(user, layer, i))
               );
               expect(itemsListed.map(t => t.toNumber())).to.have.members([
                 firstItemId.toNumber(),
@@ -704,6 +704,18 @@ contract("Item", accounts => {
 
           it("clears the approval for the item ID", async function() {
             expect(await item.getApprovedTransfer(itemId, layer)).to.be.equal(
+              ZERO_ADDRESS
+            );
+          });
+
+          it("clears the approval of setting tenant right for the item ID", async function() {
+            expect(await item.getApprovedTenantRight(itemId)).to.be.equal(
+              ZERO_ADDRESS
+            );
+          });
+
+          it("clears the approval of setting lien for the item ID", async function() {
+            expect(await item.getApprovedLien(itemId)).to.be.equal(
               ZERO_ADDRESS
             );
           });
@@ -1161,7 +1173,7 @@ contract("Item", accounts => {
         });
       });
     });
-    
+
     describe("approve in ERCX", function() {
       const itemId = firstItemId;
       let logs = null;
@@ -3277,6 +3289,5 @@ contract("Item", accounts => {
         });
       });
     });
-    
   });
 });
