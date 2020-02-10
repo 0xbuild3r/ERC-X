@@ -6,7 +6,7 @@ pragma solidity ^0.5.0;
  * from ERCX asset contracts.
  */
 contract IERCXReceiver {
-  /**
+    /**
     * @notice Handle the receipt of an NFT
     * @dev The ERCX smart contract calls this function on the recipient
     * after a {IERCX-safeTransferFrom}. This function MUST return the function selector,
@@ -20,13 +20,11 @@ contract IERCXReceiver {
     * @param data Additional data with no specified format
     * @return bytes4 `bytes4(keccak256("onERCXReceived(address,address,uint256,uint256,bytes)"))`
     */
-  function onERCXReceived(
-    address operator,
-    address from,
-    uint256 itemId,
-    uint256 layer,
-    bytes memory data
-  )
-    public
-    returns(bytes4);
+    function onERCXReceived(
+        address operator,
+        address from,
+        uint256 itemId,
+        uint256 layer,
+        bytes memory data
+    ) public returns (bytes4);
 }
