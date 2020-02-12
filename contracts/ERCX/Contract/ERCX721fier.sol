@@ -6,7 +6,7 @@ import "../../Libraries/token/ERC721/IERC721Receiver.sol";
 
 /**
  * @title ERC721 Non-Fungible Token Standard compatible layer
- * Each items here represents layer 1 item of the item set.
+ * Each items here represents owner of the item set.
  * By implementing this contract set, ERCX can pretend to be an ERC721 contrtact set.
  * @dev see https://eips.ethereum.org/EIPS/eip-721
  */
@@ -23,12 +23,18 @@ contract ERCX721fier is ERC165, IERC721, ERCX {
         return balanceOfOwner(owner);
     }
 
+    function ownerOf(uint256 itemId) public view returns (address) {
+        return super.ownerOf(itemId);
+    }
+
     function approve(address to, uint256 itemId) public {
-        approveTransferOwner(to, itemId);
+        approveForOwner(to, itemId);
+        address owner = ownerOf(itemId);
+        emit Approval(owner, to, itemId);
     }
 
     function getApproved(uint256 itemId) public view returns (address) {
-        return getApprovedTransferOwner(itemId);
+        return getApprovedForOwner(itemId);
     }
 
     function transferFrom(address from, address to, uint256 itemId) public {
@@ -39,6 +45,7 @@ contract ERCX721fier is ERC165, IERC721, ERCX {
         } else {
             _transfer(from, to, itemId, 2);
         }
+        emit Transfer(from, to, itemId);
     }
 
     function safeTransferFrom(address from, address to, uint256 itemId) public {

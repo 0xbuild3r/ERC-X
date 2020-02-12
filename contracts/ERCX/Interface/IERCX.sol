@@ -10,7 +10,7 @@ contract IERCX is IERC165 {
         address operator
     );
     event ApprovalForUser(
-        address indexed owner,
+        address indexed user,
         address indexed approved,
         uint256 itemId
     );
@@ -61,19 +61,11 @@ contract IERCX is IERC165 {
         bytes memory data
     ) public;
 
-    function approveTransferOwner(address to, uint256 itemId, uint256 layer)
-        public;
-    function getApprovedTransferOwner(uint256 itemId, uint256 layer)
-        public
-        view
-        returns (address);
+    function approveForOwner(address to, uint256 itemId) public;
+    function getApprovedForOwner(uint256 itemId) public view returns (address);
 
-    function approveTransferUser(address to, uint256 itemId, uint256 layer)
-        public;
-    function getApprovedTransferUser(uint256 itemId, uint256 layer)
-        public
-        view
-        returns (address);
+    function approveForUser(address to, uint256 itemId) public;
+    function getApprovedForUser(uint256 itemId) public view returns (address);
 
     function setApprovalForAll(address operator, bool approved) public;
     function isApprovedForAll(address requester, address operator)

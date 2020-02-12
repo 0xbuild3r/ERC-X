@@ -69,44 +69,52 @@ contract("Item", accounts => {
         from: minter
       });
     });
-
-    describe("balanceOf in ERCX", function() {
-      context(
-        "when the given address owns some items in layer2 as ERCX",
-        function() {
-          it("returns the amount of items owned by the given address", async function() {
-            expect(await item.balanceOf(owner, 2)).to.be.bignumber.equal("2");
-          });
-        }
-      );
-
-      context(
-        "when the given address does not own any items in layer2 as ERCX",
-        function() {
-          it("returns 0", async function() {
-            expect(await item.balanceOf(other, 2)).to.be.bignumber.equal("0");
-          });
-        }
-      );
-
-      context("when the given layer was higher than layer 2", function() {
-        it("returns 0", async function() {
-          expect(await item.balanceOf(owner, 3)).to.be.bignumber.equal("0");
+    
+    describe("balanceOfUser in ERCX", function() {
+      context("when the given address owns some items", function() {
+        it("returns the amount of items owned by the given address", async function() {
+          expect(await item.balanceOfUser(owner)).to.be.bignumber.equal("2");
         });
       });
 
-      context("when querying the zero address of layer2", function() {
+      context("when the given address does not own any items", function() {
+        it("returns 0", async function() {
+          expect(await item.balanceOfUser(other)).to.be.bignumber.equal("0");
+        });
+      });
+
+      context("when querying the zero address", function() {
         it("throws", async function() {
-          await expectRevert.unspecified(item.balanceOf(ZERO_ADDRESS, 2));
+          await expectRevert.unspecified(item.balanceOfUser(ZERO_ADDRESS));
         });
       });
     });
 
-    describe("addressOf in ERCX", function() {
+    describe("balanceOfOwner in ERCX", function() {
+      context("when the given address owns some items", function() {
+        it("returns the amount of items owned by the given address", async function() {
+          expect(await item.balanceOfOwner(owner)).to.be.bignumber.equal("2");
+        });
+      });
+
+      context("when the given address does not own any items", function() {
+        it("returns 0", async function() {
+          expect(await item.balanceOfOwner(other)).to.be.bignumber.equal("0");
+        });
+      });
+
+      context("when querying the zero address", function() {
+        it("throws", async function() {
+          await expectRevert.unspecified(item.balanceOfOwner(ZERO_ADDRESS));
+        });
+      });
+    });
+    
+    describe("userOf in ERCX", function() {
       context("when the given item ID was tracked by this item", function() {
         const itemId = firstItemId;
-        it("returns the owner of the given item ID ERCX in layer2", async function() {
-          expect(await item.addressOf(itemId, 2)).to.be.equal(owner);
+        it("returns the user of the given item ID", async function() {
+          expect(await item.userOf(itemId)).to.be.equal(owner);
         });
       });
 
@@ -115,39 +123,48 @@ contract("Item", accounts => {
         function() {
           const itemId = nonExistentItemId;
           it("reverts", async function() {
-            await expectRevert.unspecified(item.addressOf(itemId, 2));
-          });
-        }
-      );
-
-      context(
-        "when the given item ID was tracked by this item but layer was higher than 2",
-        function() {
-          const itemId = firstItemId;
-          it("reverts", async function() {
-            await expectRevert.unspecified(item.addressOf(itemId, 3));
+            await expectRevert.unspecified(item.userOf(itemId));
           });
         }
       );
     });
+    
+    describe("ownerOf in ERCX", function() {
+      context("when the given item ID was tracked by this item", function() {
+        const itemId = firstItemId;
+        it("returns the owner of the given item ID", async function() {
+          expect(await item.ownerOf(itemId)).to.be.equal(owner);
+        });
+      });
 
-    describe("safeTransfer in ERCX", function() {
+      context(
+        "when the given item ID was not tracked by this item",
+        function() {
+          const itemId = nonExistentItemId;
+          it("reverts", async function() {
+            await expectRevert.unspecified(item.ownerOf(itemId));
+          });
+        }
+      );
+    });
+    
+    describe("transfers in ERCX", function() {
       const itemId = firstItemId;
       let logs = null;
 
-      describe("Layer 1", function() {
+      
+      describe("User", function() {
         const layer = new BN(1);
-
         beforeEach(async function() {
-          await item.safeTransfer(owner, user, firstItemId, layer, data, {
+          await item.safeTransferUser(owner, user, firstItemId, data, {
             from: owner
           });
-          await item.safeTransfer(owner, user, secondItemId, layer, data, {
+          await item.safeTransferUser(owner, user, secondItemId, data, {
             from: owner
           });
           await item.setApprovalForAll(operator, true, { from: user });
           await item.setApprovalForAll(operator2, true, { from: owner });
-          await item.approveTransfer(approvedTransfer, itemId, layer, {
+          await item.approveForUser(approvedTransfer, itemId, {
             from: owner
           });
         });
@@ -155,54 +172,49 @@ contract("Item", accounts => {
         const transferWasSuccessfulX = function({
           user,
           itemId,
-          layer,
           approvedTransfer
         }) {
           it("transfers the ownership of the given item ID to the given address", async function() {
-            expect(await item.addressOf(itemId, 1)).to.be.equal(other);
+            expect(await item.userOf(itemId)).to.be.equal(other);
           });
 
           it("clears the approval for the item ID", async function() {
-            expect(await item.getApprovedTransfer(itemId, 1)).to.be.equal(
+            expect(await item.getApprovedForUser(itemId)).to.be.equal(
               ZERO_ADDRESS
             );
           });
 
           if (approvedTransfer) {
-            it("emit only a transfer event", async function() {
-              expectEvent.inLogs(logs, "Transfer", {
+            it("emit a transfer event", async function() {
+              expectEvent.inLogs(logs, "TransferUser", {
                 from: user,
                 to: other,
-                itemId: itemId,
-                layer: layer
+                itemId: itemId
               });
             });
           } else {
             it("emits only a transfer event", async function() {
-              expectEvent.inLogs(logs, "Transfer", {
+              expectEvent.inLogs(logs, "TransferUser", {
                 from: user,
                 to: other,
-                itemId: itemId,
-                layer: layer
+                itemId: itemId
               });
             });
           }
 
           it("adjusts owners balances", async function() {
-            expect(await item.balanceOf(user, layer)).to.be.bignumber.equal(
-              "1"
-            );
+            expect(await item.balanceOfUser(user)).to.be.bignumber.equal("1");
           });
 
           it("adjusts owners items by index", async function() {
             if (!item.itemOfOwnerByIndex) return;
 
             expect(
-              await item.itemOfOwnerByIndex(other, layer, 0)
+              await item.itemOfUserByIndex(other, 0)
             ).to.be.bignumber.equal(itemId);
 
             expect(
-              await item.itemOfOwnerByIndex(user, layer, 0)
+              await item.itemOfUserByIndex(user, 0)
             ).to.be.bignumber.not.equal(itemId);
           });
         };
@@ -215,14 +227,12 @@ contract("Item", accounts => {
                 user,
                 other,
                 itemId,
-                layer,
                 { from: user }
               ));
             });
             transferWasSuccessfulX({
               user,
               itemId,
-              layer,
               approvedTransfer
             });
           });
@@ -234,14 +244,12 @@ contract("Item", accounts => {
                 user,
                 other,
                 itemId,
-                layer,
                 { from: owner }
               ));
             });
             transferWasSuccessfulX({
               user,
               itemId,
-              layer,
               approvedTransfer
             });
           });
@@ -253,14 +261,12 @@ contract("Item", accounts => {
                 user,
                 other,
                 itemId,
-                layer,
                 { from: approvedTransfer }
               ));
             });
             transferWasSuccessfulX({
               user,
               itemId,
-              layer,
               approvedTransfer
             });
           });
@@ -272,14 +278,12 @@ contract("Item", accounts => {
                 user,
                 other,
                 itemId,
-                layer,
                 { from: operator }
               ));
             });
             transferWasSuccessfulX({
               user,
               itemId,
-              layer,
               approvedTransfer
             });
           });
@@ -291,14 +295,12 @@ contract("Item", accounts => {
                 user,
                 other,
                 itemId,
-                layer,
                 { from: operator2 }
               ));
             });
             transferWasSuccessfulX({
               user,
               itemId,
-              layer,
               approvedTransfer
             });
           });
@@ -312,14 +314,12 @@ contract("Item", accounts => {
                 user,
                 other,
                 itemId,
-                layer,
                 { from: lien }
               ));
             });
             transferWasSuccessfulX({
               user,
               itemId,
-              layer,
               approvedTransfer
             });
           });
@@ -328,7 +328,7 @@ contract("Item", accounts => {
             "when called by the owner without an approvedTransfer user",
             function() {
               beforeEach(async function() {
-                await item.approveTransfer(ZERO_ADDRESS, itemId, layer, {
+                await item.approveForUser(ZERO_ADDRESS, itemId, {
                   from: owner
                 });
                 ({ logs } = await transferFunction.call(
@@ -336,14 +336,12 @@ contract("Item", accounts => {
                   user,
                   other,
                   itemId,
-                  layer,
                   { from: owner }
                 ));
               });
               transferWasSuccessfulX({
                 user,
                 itemId,
-                layer,
                 approvedTransfer: null
               });
             }
@@ -356,40 +354,36 @@ contract("Item", accounts => {
                 user,
                 user,
                 itemId,
-                layer,
                 { from: user }
               ));
             });
 
-            it("keeps ownership of the item", async function() {
-              expect(await item.addressOf(itemId, layer)).to.be.equal(user);
+            it("keeps usership of the item", async function() {
+              expect(await item.userOf(itemId)).to.be.equal(user);
             });
 
             it("clears the approval for the item ID", async function() {
-              expect(await item.getApprovedTransfer(itemId, layer)).to.be.equal(
+              expect(await item.getApprovedForUser(itemId)).to.be.equal(
                 ZERO_ADDRESS
               );
             });
 
             it("emits only a transfer event", async function() {
-              expectEvent.inLogs(logs, "Transfer", {
+              expectEvent.inLogs(logs, "TransferUser", {
                 from: user,
                 to: user,
-                itemId: itemId,
-                layer: layer
+                itemId: itemId
               });
             });
 
-            it("keeps the owner balance", async function() {
-              expect(await item.balanceOf(user, layer)).to.be.bignumber.equal(
-                "2"
-              );
+            it("keeps the user balance", async function() {
+              expect(await item.balanceOfUser(user)).to.be.bignumber.equal("2");
             });
 
             it("keeps same items by index", async function() {
               if (!item.itemOfOwnerByIndex) return;
               const itemsListed = await Promise.all(
-                [0, 1].map(i => item.itemOfOwnerByIndex(user, layer, i))
+                [0, 1].map(i => item.itemOfUserByIndex(user, i))
               );
               expect(itemsListed.map(t => t.toNumber())).to.have.members([
                 firstItemId.toNumber(),
@@ -411,7 +405,7 @@ contract("Item", accounts => {
               });
               it("reverts", async function() {
                 await expectRevert.unspecified(
-                  transferFunction.call(this, user, other, itemId, layer, {
+                  transferFunction.call(this, user, other, itemId, {
                     from: owner
                   })
                 );
@@ -432,7 +426,7 @@ contract("Item", accounts => {
               });
               it("reverts", async function() {
                 await expectRevert.unspecified(
-                  transferFunction.call(this, user, other, itemId, layer, {
+                  transferFunction.call(this, user, other, itemId, {
                     from: operator2
                   })
                 );
@@ -445,7 +439,7 @@ contract("Item", accounts => {
             function() {
               it("reverts", async function() {
                 await expectRevert.unspecified(
-                  transferFunction.call(this, other, other, itemId, layer, {
+                  transferFunction.call(this, other, other, itemId, {
                     from: owner
                   })
                 );
@@ -458,7 +452,7 @@ contract("Item", accounts => {
             function() {
               it("reverts", async function() {
                 await expectRevert.unspecified(
-                  transferFunction.call(this, user, other, itemId, layer, {
+                  transferFunction.call(this, user, other, itemId, {
                     from: other
                   })
                 );
@@ -469,16 +463,9 @@ contract("Item", accounts => {
           context("when the given item ID does not exist", function() {
             it("reverts", async function() {
               await expectRevert.unspecified(
-                transferFunction.call(
-                  this,
-                  owner,
-                  other,
-                  nonExistentItemId,
-                  layer,
-                  {
-                    from: owner
-                  }
-                )
+                transferFunction.call(this, owner, other, nonExistentItemId, {
+                  from: owner
+                })
               );
             });
           });
@@ -488,46 +475,26 @@ contract("Item", accounts => {
             function() {
               it("reverts", async function() {
                 await expectRevert.unspecified(
-                  transferFunction.call(
-                    this,
-                    owner,
-                    ZERO_ADDRESS,
-                    itemId,
-                    layer,
-                    {
-                      from: owner
-                    }
-                  )
+                  transferFunction.call(this, owner, ZERO_ADDRESS, itemId, {
+                    from: owner
+                  })
                 );
               });
             }
           );
         };
 
-        const safeTransferFromWithData = function(
-          from,
-          to,
-          itemId,
-          layer,
-          opts
-        ) {
+        const safeTransferFromWithData = function(from, to, itemId, opts) {
           return item.methods[
-            "safeTransfer(address,address,uint256,uint256,bytes)"
-          ](from, to, itemId, layer, data, opts);
+            "safeTransferUser(address,address,uint256,bytes)"
+          ](from, to, itemId, data, opts);
         };
 
-        const safeTransferFromWithoutData = function(
-          from,
-          to,
-          itemId,
-          layer,
-          opts
-        ) {
-          return item.methods["safeTransfer(address,address,uint256,uint256)"](
+        const safeTransferFromWithoutData = function(from, to, itemId, opts) {
+          return item.methods["safeTransferUser(address,address,uint256)"](
             from,
             to,
             itemId,
-            layer,
             opts
           );
         };
@@ -554,7 +521,6 @@ contract("Item", accounts => {
                 user,
                 this.receiver.address,
                 itemId,
-                layer,
                 { from: user }
               );
 
@@ -578,7 +544,6 @@ contract("Item", accounts => {
                 user,
                 this.receiver.address,
                 itemId,
-                layer,
                 { from: approvedTransfer }
               );
 
@@ -604,7 +569,6 @@ contract("Item", accounts => {
                     user,
                     this.receiver.address,
                     nonExistentItemId,
-                    layer,
                     { from: user }
                   )
                 );
@@ -625,11 +589,10 @@ contract("Item", accounts => {
           it("reverts", async function() {
             const invalidReceiver = await ERCXReceiverMock.new("0x42", false);
             await expectRevert(
-              item.safeTransfer(
+              item.safeTransferUser(
                 user,
                 invalidReceiver.address,
                 itemId,
-                layer,
                 data,
                 {
                   from: user
@@ -647,11 +610,10 @@ contract("Item", accounts => {
               true
             );
             await expectRevert(
-              item.safeTransfer(
+              item.safeTransferUser(
                 user,
                 invalidReceiver.address,
                 itemId,
-                layer,
                 data,
                 {
                   from: user
@@ -666,11 +628,10 @@ contract("Item", accounts => {
           it("reverts", async function() {
             const invalidReceiver = item;
             await expectRevert.unspecified(
-              item.safeTransfer(
+              item.safeTransferUser(
                 user,
                 invalidReceiver.address,
                 itemId,
-                layer,
                 data,
                 {
                   from: user
@@ -680,14 +641,15 @@ contract("Item", accounts => {
           });
         });
       });
-
-      describe("Layer 2", function() {
+    
+      
+      describe("Owner", function() {
         const layer = new BN(2);
 
         beforeEach(async function() {
           await item.setApprovalForAll(operator, true, { from: user });
           await item.setApprovalForAll(operator2, true, { from: owner });
-          await item.approveTransfer(approvedTransfer, itemId, layer, {
+          await item.approveForOwner(approvedTransfer, itemId,  {
             from: owner
           });
         });
@@ -695,15 +657,14 @@ contract("Item", accounts => {
         const transferWasSuccessfulX = function({
           owner,
           itemId,
-          layer,
           approvedTransfer
         }) {
           it("transfers the ownership of the given item ID to the given address", async function() {
-            expect(await item.addressOf(itemId, layer)).to.be.equal(other);
+            expect(await item.ownerOf(itemId)).to.be.equal(other);
           });
 
           it("clears the approval for the item ID", async function() {
-            expect(await item.getApprovedTransfer(itemId, layer)).to.be.equal(
+            expect(await item.getApprovedForOwner(itemId)).to.be.equal(
               ZERO_ADDRESS
             );
           });
@@ -721,27 +682,25 @@ contract("Item", accounts => {
           });
 
           if (approvedTransfer) {
-            it("emit only a transfer event", async function() {
-              expectEvent.inLogs(logs, "Transfer", {
+            it("emit a transfer event", async function() {
+              expectEvent.inLogs(logs, "TransferOwner", {
                 from: owner,
                 to: other,
-                itemId: itemId,
-                layer: layer
+                itemId: itemId
               });
             });
           } else {
             it("emits only a transfer event", async function() {
-              expectEvent.inLogs(logs, "Transfer", {
+              expectEvent.inLogs(logs, "TransferOwner", {
                 from: owner,
                 to: other,
-                itemId: itemId,
-                layer: layer
+                itemId: itemId
               });
             });
           }
 
           it("adjusts owners balances", async function() {
-            expect(await item.balanceOf(owner, layer)).to.be.bignumber.equal(
+            expect(await item.balanceOfOwner(owner)).to.be.bignumber.equal(
               "1"
             );
           });
@@ -750,11 +709,11 @@ contract("Item", accounts => {
             if (!item.itemOfOwnerByIndex) return;
 
             expect(
-              await item.itemOfOwnerByIndex(other, layer, 0)
+              await item.itemOfOwnerByIndex(other, 0)
             ).to.be.bignumber.equal(itemId);
 
             expect(
-              await item.itemOfOwnerByIndex(owner, layer, 0)
+              await item.itemOfOwnerByIndex(owner, 0)
             ).to.be.bignumber.not.equal(itemId);
           });
         };
@@ -767,14 +726,12 @@ contract("Item", accounts => {
                 owner,
                 other,
                 itemId,
-                layer,
                 { from: owner }
               ));
             });
             transferWasSuccessfulX({
               owner,
               itemId,
-              layer,
               approvedTransfer
             });
           });
@@ -786,14 +743,12 @@ contract("Item", accounts => {
                 owner,
                 other,
                 itemId,
-                layer,
                 { from: approvedTransfer }
               ));
             });
             transferWasSuccessfulX({
               owner,
               itemId,
-              layer,
               approvedTransfer
             });
           });
@@ -805,14 +760,12 @@ contract("Item", accounts => {
                 owner,
                 other,
                 itemId,
-                layer,
                 { from: operator2 }
               ));
             });
             transferWasSuccessfulX({
               owner,
               itemId,
-              layer,
               approvedTransfer
             });
           });
@@ -826,14 +779,12 @@ contract("Item", accounts => {
                 owner,
                 other,
                 itemId,
-                layer,
                 { from: lien }
               ));
             });
             transferWasSuccessfulX({
               owner,
               itemId,
-              layer,
               approvedTransfer
             });
           });
@@ -842,7 +793,7 @@ contract("Item", accounts => {
             "when called by the owner without an approvedTransfer user",
             function() {
               beforeEach(async function() {
-                await item.approveTransfer(ZERO_ADDRESS, itemId, layer, {
+                await item.approveForOwner(ZERO_ADDRESS, itemId, {
                   from: owner
                 });
                 ({ logs } = await transferFunction.call(
@@ -850,14 +801,12 @@ contract("Item", accounts => {
                   owner,
                   other,
                   itemId,
-                  layer,
                   { from: owner }
                 ));
               });
               transferWasSuccessfulX({
                 owner,
                 itemId,
-                layer,
                 approvedTransfer: null
               });
             }
@@ -870,32 +819,30 @@ contract("Item", accounts => {
                 owner,
                 owner,
                 itemId,
-                layer,
                 { from: owner }
               ));
             });
 
             it("keeps ownership of the item", async function() {
-              expect(await item.addressOf(itemId, layer)).to.be.equal(owner);
+              expect(await item.ownerOf(itemId)).to.be.equal(owner);
             });
 
             it("clears the approval for the item ID", async function() {
-              expect(await item.getApprovedTransfer(itemId, layer)).to.be.equal(
+              expect(await item.getApprovedForOwner(itemId)).to.be.equal(
                 ZERO_ADDRESS
               );
             });
 
             it("emits only a transfer event", async function() {
-              expectEvent.inLogs(logs, "Transfer", {
+              expectEvent.inLogs(logs, "TransferOwner", {
                 from: owner,
                 to: owner,
-                itemId: itemId,
-                layer: layer
+                itemId: itemId
               });
             });
 
             it("keeps the owner balance", async function() {
-              expect(await item.balanceOf(owner, layer)).to.be.bignumber.equal(
+              expect(await item.balanceOfOwner(owner)).to.be.bignumber.equal(
                 "2"
               );
             });
@@ -903,7 +850,7 @@ contract("Item", accounts => {
             it("keeps same items by index", async function() {
               if (!item.itemOfOwnerByIndex) return;
               const itemsListed = await Promise.all(
-                [0, 1].map(i => item.itemOfOwnerByIndex(owner, layer, i))
+                [0, 1].map(i => item.itemOfOwnerByIndex(owner, i))
               );
               expect(itemsListed.map(t => t.toNumber())).to.have.members([
                 firstItemId.toNumber(),
@@ -915,7 +862,7 @@ contract("Item", accounts => {
           context("when called by the user", function() {
             it("reverts", async function() {
               await expectRevert.unspecified(
-                transferFunction.call(this, owner, other, itemId, layer, {
+                transferFunction.call(this, owner, other, itemId, {
                   from: user
                 })
               );
@@ -925,7 +872,7 @@ contract("Item", accounts => {
           context("when called by an operator of the user", function() {
             it("reverts", async function() {
               await expectRevert.unspecified(
-                transferFunction.call(this, owner, other, itemId, layer, {
+                transferFunction.call(this, owner, other, itemId, {
                   from: operator
                 })
               );
@@ -937,7 +884,7 @@ contract("Item", accounts => {
             function() {
               it("reverts", async function() {
                 await expectRevert.unspecified(
-                  transferFunction.call(this, other, other, itemId, layer, {
+                  transferFunction.call(this, other, other, itemId, {
                     from: owner
                   })
                 );
@@ -950,7 +897,7 @@ contract("Item", accounts => {
             function() {
               it("reverts", async function() {
                 await expectRevert.unspecified(
-                  transferFunction.call(this, owner, other, itemId, layer, {
+                  transferFunction.call(this, owner, other, itemId, {
                     from: other
                   })
                 );
@@ -966,7 +913,6 @@ contract("Item", accounts => {
                   owner,
                   other,
                   nonExistentItemId,
-                  layer,
                   {
                     from: owner
                   }
@@ -985,7 +931,6 @@ contract("Item", accounts => {
                     owner,
                     ZERO_ADDRESS,
                     itemId,
-                    layer,
                     {
                       from: owner
                     }
@@ -1000,26 +945,23 @@ contract("Item", accounts => {
           from,
           to,
           itemId,
-          layer,
           opts
         ) {
           return item.methods[
-            "safeTransfer(address,address,uint256,uint256,bytes)"
-          ](from, to, itemId, layer, data, opts);
+            "safeTransferOwner(address,address,uint256,bytes)"
+          ](from, to, itemId, data, opts);
         };
 
         const safeTransferFromWithoutData = function(
           from,
           to,
           itemId,
-          layer,
           opts
         ) {
-          return item.methods["safeTransfer(address,address,uint256,uint256)"](
+          return item.methods["safeTransferOwner(address,address,uint256)"](
             from,
             to,
             itemId,
-            layer,
             opts
           );
         };
@@ -1046,7 +988,6 @@ contract("Item", accounts => {
                 owner,
                 this.receiver.address,
                 itemId,
-                layer,
                 { from: owner }
               );
 
@@ -1070,7 +1011,6 @@ contract("Item", accounts => {
                 owner,
                 this.receiver.address,
                 itemId,
-                layer,
                 { from: approvedTransfer }
               );
 
@@ -1096,7 +1036,6 @@ contract("Item", accounts => {
                     owner,
                     this.receiver.address,
                     nonExistentItemId,
-                    layer,
                     { from: owner }
                   )
                 );
@@ -1117,11 +1056,10 @@ contract("Item", accounts => {
           it("reverts", async function() {
             const invalidReceiver = await ERCXReceiverMock.new("0x42", false);
             await expectRevert(
-              item.safeTransfer(
+              item.safeTransferOwner(
                 owner,
                 invalidReceiver.address,
                 itemId,
-                layer,
                 data,
                 {
                   from: owner
@@ -1139,11 +1077,10 @@ contract("Item", accounts => {
               true
             );
             await expectRevert(
-              item.safeTransfer(
+              item.safeTransferOwner(
                 owner,
                 invalidReceiver.address,
                 itemId,
-                layer,
                 data,
                 {
                   from: owner
@@ -1158,11 +1095,10 @@ contract("Item", accounts => {
           it("reverts", async function() {
             const invalidReceiver = item;
             await expectRevert.unspecified(
-              item.safeTransfer(
+              item.safeTransferOwner(
                 owner,
                 invalidReceiver.address,
                 itemId,
-                layer,
                 data,
                 {
                   from: owner
@@ -1172,26 +1108,27 @@ contract("Item", accounts => {
           });
         });
       });
+      
     });
-
+   
     describe("approve in ERCX", function() {
       const itemId = firstItemId;
       let logs = null;
 
-      describe("For layer 1", function() {
+      describe("When approve user", function() {
         const layer = new BN(1);
         beforeEach(async function() {
-          await item.safeTransfer(owner, user, firstItemId, layer, data, {
+          await item.safeTransferUser(owner, user, firstItemId, data, {
             from: owner
           });
-          await item.safeTransfer(owner, user, secondItemId, layer, data, {
+          await item.safeTransferUser(owner, user, secondItemId, data, {
             from: owner
           });
         });
 
         const itClearsApproval = function() {
           it("clears approval for the item", async function() {
-            expect(await item.getApprovedTransfer(itemId, layer)).to.be.equal(
+            expect(await item.getApprovedForUser(itemId)).to.be.equal(
               ZERO_ADDRESS
             );
           });
@@ -1199,7 +1136,7 @@ contract("Item", accounts => {
 
         const itApproves = function(address) {
           it("sets the approval for the target address", async function() {
-            expect(await item.getApprovedTransfer(itemId, layer)).to.be.equal(
+            expect(await item.getApprovedForUser(itemId)).to.be.equal(
               address
             );
           });
@@ -1207,11 +1144,10 @@ contract("Item", accounts => {
 
         const itEmitsApprovalEvent = function(address) {
           it("emits an approval event", async function() {
-            expectEvent.inLogs(logs, "Approval", {
-              owner: user,
+            expectEvent.inLogs(logs, "ApprovalForUser", {
+              user: user,
               approved: address,
-              itemId: itemId,
-              layer: layer
+              itemId: itemId
             });
           });
         };
@@ -1219,10 +1155,9 @@ contract("Item", accounts => {
         context("when clearing approval", function() {
           context("when there was no prior approval", function() {
             beforeEach(async function() {
-              ({ logs } = await item.approveTransfer(
+              ({ logs } = await item.approveForUser(
                 ZERO_ADDRESS,
                 itemId,
-                layer,
                 {
                   from: user
                 }
@@ -1235,13 +1170,12 @@ contract("Item", accounts => {
 
           context("when there was a prior approval", function() {
             beforeEach(async function() {
-              await item.approveTransfer(approvedTransfer, itemId, layer, {
+              await item.approveForUser(approvedTransfer, itemId, {
                 from: user
               });
-              ({ logs } = await item.approveTransfer(
+              ({ logs } = await item.approveForUser(
                 ZERO_ADDRESS,
                 itemId,
-                layer,
                 {
                   from: user
                 }
@@ -1256,10 +1190,9 @@ contract("Item", accounts => {
         context("when approving a non-zero address", function() {
           context("when there was no prior approval", function() {
             beforeEach(async function() {
-              ({ logs } = await item.approveTransfer(
+              ({ logs } = await item.approveForUser(
                 approvedTransfer,
                 itemId,
-                layer,
                 {
                   from: user
                 }
@@ -1274,13 +1207,12 @@ contract("Item", accounts => {
             "when there was a prior approval to the same address",
             function() {
               beforeEach(async function() {
-                await item.approveTransfer(approvedTransfer, itemId, layer, {
+                await item.approveForUser(approvedTransfer, itemId, {
                   from: user
                 });
-                ({ logs } = await item.approveTransfer(
+                ({ logs } = await item.approveForUser(
                   approvedTransfer,
                   itemId,
-                  layer,
                   {
                     from: user
                   }
@@ -1296,13 +1228,12 @@ contract("Item", accounts => {
             "when there was a prior approval to a different address",
             function() {
               beforeEach(async function() {
-                await item.approveTransfer(approvedTransfer2, itemId, layer, {
+                await item.approveForUser(approvedTransfer2, itemId, {
                   from: user
                 });
-                ({ logs } = await item.approveTransfer(
+                ({ logs } = await item.approveForUser(
                   approvedTransfer2,
                   itemId,
-                  layer,
                   {
                     from: user
                   }
@@ -1320,7 +1251,7 @@ contract("Item", accounts => {
           function() {
             it("reverts", async function() {
               await expectRevert.unspecified(
-                item.approveTransfer(owner, itemId, layer, { from: user })
+                item.approveForUser(owner, itemId, { from: user })
               );
             });
           }
@@ -1331,7 +1262,7 @@ contract("Item", accounts => {
           function() {
             it("reverts", async function() {
               await expectRevert.unspecified(
-                item.approveTransfer(user, itemId, layer, { from: user })
+                item.approveForUser(user, itemId, { from: user })
               );
             });
           }
@@ -1340,7 +1271,7 @@ contract("Item", accounts => {
         context("when the sender does not own the given item ID", function() {
           it("reverts", async function() {
             await expectRevert.unspecified(
-              item.approveTransfer(approvedTransfer, itemId, layer, {
+              item.approveForUser(approvedTransfer, itemId,{
                 from: other
               })
             );
@@ -1351,11 +1282,11 @@ contract("Item", accounts => {
           "when the sender is approved for the given item ID",
           function() {
             it("reverts", async function() {
-              await item.approveTransfer(approvedTransfer, itemId, layer, {
+              await item.approveForUser(approvedTransfer, itemId, {
                 from: user
               });
               await expectRevert.unspecified(
-                item.approveTransfer(approvedTransfer2, itemId, layer, {
+                item.approveForUser(approvedTransfer2, itemId, {
                   from: approvedTransfer
                 })
               );
@@ -1366,7 +1297,7 @@ contract("Item", accounts => {
         context("when the sender is neither owner nor user", function() {
           it("reverts", async function() {
             await expectRevert.unspecified(
-              item.approveTransfer(approvedTransfer, itemId, layer, {
+              item.approveForUser(approvedTransfer, itemId, {
                 from: other
               })
             );
@@ -1384,7 +1315,7 @@ contract("Item", accounts => {
                 from: tenantRight
               });
               await expectRevert.unspecified(
-                item.approveTransfer(other, itemId, layer, {
+                item.approveForUser(other, itemId, {
                   from: owner
                 })
               );
@@ -1403,7 +1334,7 @@ contract("Item", accounts => {
                 from: tenantRight
               });
               await expectRevert.unspecified(
-                item.approveTransfer(other, itemId, layer, {
+                item.approveForUser(other, itemId, {
                   from: operator2
                 })
               );
@@ -1414,10 +1345,9 @@ contract("Item", accounts => {
         context("when the sender is an operator of the user", function() {
           beforeEach(async function() {
             await item.setApprovalForAll(operator, true, { from: user });
-            ({ logs } = await item.approveTransfer(
+            ({ logs } = await item.approveForUser(
               approvedTransfer,
               itemId,
-              layer,
               {
                 from: operator
               }
@@ -1431,10 +1361,9 @@ contract("Item", accounts => {
         context("when the sender is an operator of the owner", function() {
           beforeEach(async function() {
             await item.setApprovalForAll(operator2, true, { from: owner });
-            ({ logs } = await item.approveTransfer(
+            ({ logs } = await item.approveForUser(
               approvedTransfer,
               itemId,
-              layer,
               {
                 from: operator2
               }
@@ -1448,20 +1377,20 @@ contract("Item", accounts => {
         context("when the given item ID does not exist", function() {
           it("reverts", async function() {
             await expectRevert.unspecified(
-              item.approveTransfer(approvedTransfer, nonExistentItemId, layer, {
+              item.approveForUser(approvedTransfer, nonExistentItemId, {
                 from: operator
               })
             );
           });
         });
       });
-
-      describe("For layer 2", function() {
+      
+      describe("When approve owner", function() {
         const layer = new BN(2);
 
         const itClearsApproval = function() {
           it("clears approval for the item", async function() {
-            expect(await item.getApprovedTransfer(itemId, layer)).to.be.equal(
+            expect(await item.getApprovedForOwner(itemId)).to.be.equal(
               ZERO_ADDRESS
             );
           });
@@ -1469,7 +1398,7 @@ contract("Item", accounts => {
 
         const itApproves = function(address) {
           it("sets the approval for the target address", async function() {
-            expect(await item.getApprovedTransfer(itemId, layer)).to.be.equal(
+            expect(await item.getApprovedForOwner(itemId)).to.be.equal(
               address
             );
           });
@@ -1477,11 +1406,10 @@ contract("Item", accounts => {
 
         const itEmitsApprovalEvent = function(address) {
           it("emits an approval event", async function() {
-            expectEvent.inLogs(logs, "Approval", {
+            expectEvent.inLogs(logs, "ApprovalForOwner", {
               owner: owner,
               approved: address,
-              itemId: itemId,
-              layer: layer
+              itemId: itemId
             });
           });
         };
@@ -1489,10 +1417,9 @@ contract("Item", accounts => {
         context("when clearing approval", function() {
           context("when there was no prior approval", function() {
             beforeEach(async function() {
-              ({ logs } = await item.approveTransfer(
+              ({ logs } = await item.approveForOwner(
                 ZERO_ADDRESS,
                 itemId,
-                layer,
                 {
                   from: owner
                 }
@@ -1505,13 +1432,12 @@ contract("Item", accounts => {
 
           context("when there was a prior approval", function() {
             beforeEach(async function() {
-              await item.approveTransfer(approvedTransfer, itemId, layer, {
+              await item.approveForOwner(approvedTransfer, itemId, {
                 from: owner
               });
-              ({ logs } = await item.approveTransfer(
+              ({ logs } = await item.approveForOwner(
                 ZERO_ADDRESS,
                 itemId,
-                layer,
                 {
                   from: owner
                 }
@@ -1526,10 +1452,9 @@ contract("Item", accounts => {
         context("when approving a non-zero address", function() {
           context("when there was no prior approval", function() {
             beforeEach(async function() {
-              ({ logs } = await item.approveTransfer(
+              ({ logs } = await item.approveForOwner(
                 approvedTransfer,
                 itemId,
-                layer,
                 {
                   from: owner
                 }
@@ -1544,13 +1469,12 @@ contract("Item", accounts => {
             "when there was a prior approval to the same address",
             function() {
               beforeEach(async function() {
-                await item.approveTransfer(approvedTransfer, itemId, layer, {
+                await item.approveForOwner(approvedTransfer, itemId, {
                   from: owner
                 });
-                ({ logs } = await item.approveTransfer(
+                ({ logs } = await item.approveForOwner(
                   approvedTransfer,
                   itemId,
-                  layer,
                   {
                     from: owner
                   }
@@ -1566,13 +1490,12 @@ contract("Item", accounts => {
             "when there was a prior approval to a different address",
             function() {
               beforeEach(async function() {
-                await item.approveTransfer(approvedTransfer2, itemId, layer, {
+                await item.approveForOwner(approvedTransfer2, itemId, {
                   from: owner
                 });
-                ({ logs } = await item.approveTransfer(
+                ({ logs } = await item.approveForOwner(
                   approvedTransfer2,
                   itemId,
-                  layer,
                   {
                     from: owner
                   }
@@ -1590,7 +1513,7 @@ contract("Item", accounts => {
           function() {
             it("reverts", async function() {
               await expectRevert.unspecified(
-                item.approveTransfer(owner, itemId, layer, { from: owner })
+                item.approveForOwner(owner, itemId, { from: owner })
               );
             });
           }
@@ -1600,7 +1523,7 @@ contract("Item", accounts => {
           "when the address that receives the approval is the user",
           function() {
             beforeEach(async function() {
-              ({ logs } = await item.approveTransfer(user, itemId, layer, {
+              ({ logs } = await item.approveForOwner(user, itemId, {
                 from: owner
               }));
             });
@@ -1612,7 +1535,7 @@ contract("Item", accounts => {
         context("when the sender does not own the given item ID", function() {
           it("reverts", async function() {
             await expectRevert.unspecified(
-              item.approveTransfer(approvedTransfer, itemId, layer, {
+              item.approveForOwner(approvedTransfer, itemId, {
                 from: other
               })
             );
@@ -1623,11 +1546,11 @@ contract("Item", accounts => {
           "when the sender is approved for the given item ID",
           function() {
             it("reverts", async function() {
-              await item.approveTransfer(approvedTransfer, itemId, layer, {
+              await item.approveForOwner(approvedTransfer, itemId, {
                 from: owner
               });
               await expectRevert.unspecified(
-                item.approveTransfer(approvedTransfer2, itemId, layer, {
+                item.approveForOwner(approvedTransfer2, itemId, {
                   from: approvedTransfer
                 })
               );
@@ -1638,7 +1561,7 @@ contract("Item", accounts => {
         context("when the sender is neither owner nor user", function() {
           it("reverts", async function() {
             await expectRevert.unspecified(
-              item.approveTransfer(approvedTransfer, itemId, layer, {
+              item.approveForOwner(approvedTransfer, itemId, {
                 from: other
               })
             );
@@ -1648,7 +1571,7 @@ contract("Item", accounts => {
         context("when the sender is an operator of the user", function() {
           it("reverts", async function() {
             await expectRevert.unspecified(
-              item.approveTransfer(approvedTransfer, itemId, layer, {
+              item.approveForOwner(approvedTransfer, itemId, {
                 from: operator
               })
             );
@@ -1658,10 +1581,9 @@ contract("Item", accounts => {
         context("when the sender is an operator of the owner", function() {
           beforeEach(async function() {
             await item.setApprovalForAll(operator2, true, { from: owner });
-            ({ logs } = await item.approveTransfer(
+            ({ logs } = await item.approveForOwner(
               approvedTransfer,
               itemId,
-              layer,
               {
                 from: operator2
               }
@@ -1675,15 +1597,16 @@ contract("Item", accounts => {
         context("when the given item ID does not exist", function() {
           it("reverts", async function() {
             await expectRevert.unspecified(
-              item.approveTransfer(approvedTransfer, nonExistentItemId, layer, {
+              item.approveForOwner(approvedTransfer, nonExistentItemId, {
                 from: operator
               })
             );
           });
         });
       });
+      
     });
-
+    
     describe("getApproved in ERCX", async function() {
       context("when item is not minted", async function() {
         it("reverts", async function() {
@@ -1983,7 +1906,7 @@ contract("Item", accounts => {
       };
 
       const itEmitsSetEvent = function(address) {
-        it("emits an approval event", async function() {
+        it("emits a setting confirmation event", async function() {
           expectEvent.inLogs(logs, "LienSet", {
             attn: address,
             itemId: itemId,
@@ -2045,7 +1968,7 @@ contract("Item", accounts => {
       };
 
       const itEmitsSetEvent = function(address) {
-        it("emits an approval event", async function() {
+        it("emits a lien set event", async function() {
           expectEvent.inLogs(logs, "LienSet", {
             attn: ZERO_ADDRESS,
             itemId: itemId,
@@ -2297,7 +2220,7 @@ contract("Item", accounts => {
       };
 
       const itEmitsSetEvent = function(address) {
-        it("emits an approval event", async function() {
+        it("emits a tenant set event", async function() {
           expectEvent.inLogs(logs, "TenantRightSet", {
             attn: address,
             itemId: itemId,
@@ -2307,8 +2230,8 @@ contract("Item", accounts => {
       };
 
       const itClearsApprovalTransfer = function() {
-        it("clears approval for the transfer of the item of layer 1", async function() {
-          expect(await item.getApprovedTransfer(itemId, 1)).to.be.equal(
+        it("clears approval for the transfer of the user of an item", async function() {
+          expect(await item.getApprovedForUser(itemId)).to.be.equal(
             ZERO_ADDRESS
           );
         });
@@ -2372,7 +2295,7 @@ contract("Item", accounts => {
       };
 
       const itEmitsSetEvent = function(address) {
-        it("emits an approval event", async function() {
+        it("emits a tenant set event", async function() {
           expectEvent.inLogs(logs, "TenantRightSet", {
             attn: ZERO_ADDRESS,
             itemId: itemId,
@@ -2518,19 +2441,19 @@ contract("Item", accounts => {
         });
 
         if (approvedTransfer) {
-          it("emit only a transfer event", async function() {
+          it("emit a transfer event", async function() {
             expectEvent.inLogs(logs, "Transfer", {
               from: owner,
               to: other,
-              itemId: itemId
+              tokenId: itemId
             });
           });
         } else {
-          it("emits only a transfer event", async function() {
+          it("emits a transfer event", async function() {
             expectEvent.inLogs(logs, "Transfer", {
               from: owner,
               to: other,
-              itemId: itemId
+              tokenId: itemId
             });
           });
         }
@@ -2543,11 +2466,11 @@ contract("Item", accounts => {
           if (!item.itemOfOwnerByIndex) return;
 
           expect(
-            await item.itemOfOwnerByIndex(other, 2, 0)
+            await item.itemOfOwnerByIndex(other, 0)
           ).to.be.bignumber.equal(itemId);
 
           expect(
-            await item.itemOfOwnerByIndex(owner, 2, 0)
+            await item.itemOfOwnerByIndex(owner, 0)
           ).to.be.bignumber.not.equal(itemId);
         });
       };
@@ -2566,8 +2489,8 @@ contract("Item", accounts => {
               ));
             });
             transferWasSuccessful721({ owner, itemId, approvedTransfer });
-            it("layer 1 has been also transferred ", async function() {
-              expect(await item.balanceOf(owner, 1)).to.be.bignumber.equal("1");
+            it("user has also been transferred ", async function() {
+              expect(await item.balanceOfOwner(owner)).to.be.bignumber.equal("1");
             });
           }
         );
@@ -2587,8 +2510,8 @@ contract("Item", accounts => {
               ));
             });
             transferWasSuccessful721({ owner, itemId, approvedTransfer });
-            it("layer 1 has not been transferred ", async function() {
-              expect(await item.balanceOf(owner, 1)).to.be.bignumber.equal("2");
+            it("user has not been transferred ", async function() {
+              expect(await item.balanceOfUser(owner)).to.be.bignumber.equal("2");
             });
           }
         );
@@ -2663,7 +2586,7 @@ contract("Item", accounts => {
             expectEvent.inLogs(logs, "Transfer", {
               from: owner,
               to: owner,
-              itemId: itemId
+              tokenId: itemId
             });
           });
 
@@ -2674,7 +2597,7 @@ contract("Item", accounts => {
           it("keeps same items by index", async function() {
             if (!item.itemOfOwnerByIndex) return;
             const itemsListed = await Promise.all(
-              [0, 1].map(i => item.itemOfOwnerByIndex(owner, 1, i))
+              [0, 1].map(i => item.itemOfOwnerByIndex(owner, i))
             );
             expect(itemsListed.map(t => t.toNumber())).to.have.members([
               firstItemId.toNumber(),
@@ -2901,7 +2824,7 @@ contract("Item", accounts => {
           expectEvent.inLogs(logs, "Approval", {
             owner: owner,
             approved: address,
-            itemId: itemId
+            tokenId: itemId
           });
         });
       };
@@ -3143,20 +3066,20 @@ contract("Item", accounts => {
       describe("when the given index is lower than the amount of items owned by the given address", function() {
         it("returns the item ID placed at the given index", async function() {
           expect(
-            await item.itemOfOwnerByIndex(owner, 2, 0)
+            await item.itemOfOwnerByIndex(owner, 0)
           ).to.be.bignumber.equal(firstItemId);
         });
       });
 
       describe("when the index is greater than or equal to the total items owned by the given address", function() {
         it("reverts", async function() {
-          await expectRevert.unspecified(item.itemOfOwnerByIndex(owner, 2, 10));
+          await expectRevert.unspecified(item.itemOfOwnerByIndex(owner, 10));
         });
       });
 
       describe("when the given address does not own any item", function() {
         it("reverts", async function() {
-          await expectRevert.unspecified(item.itemOfOwnerByIndex(other, 2, 0));
+          await expectRevert.unspecified(item.itemOfOwnerByIndex(other, 0));
         });
       });
     });
@@ -3215,15 +3138,15 @@ contract("Item", accounts => {
         });
 
         it("assigns the item to the new owner", async function() {
-          expect(await item.addressOf(thirdItemId, 1)).to.equal(newOwner);
+          expect(await item.ownerOf(thirdItemId)).to.equal(newOwner);
         });
 
         it("increases the balance of its owner", async function() {
-          expect(await item.balanceOf(newOwner, 1)).to.be.bignumber.equal("1");
+          expect(await item.balanceOfOwner(newOwner)).to.be.bignumber.equal("1");
         });
 
         it("emits a transfer and minted event", async function() {
-          expectEvent.inLogs(logs, "Transfer", {
+          expectEvent.inLogs(logs, "TransferOwner", {
             from: ZERO_ADDRESS,
             to: newOwner,
             itemId: thirdItemId
@@ -3273,7 +3196,7 @@ contract("Item", accounts => {
         });
 
         it("emits a burn event", async function() {
-          expectEvent.inLogs(logs, "Transfer", {
+          expectEvent.inLogs(logs, "TransferOwner", {
             from: owner,
             to: ZERO_ADDRESS,
             itemId: itemId
@@ -3289,5 +3212,6 @@ contract("Item", accounts => {
         });
       });
     });
+    
   });
 });

@@ -90,9 +90,9 @@ contract ERCX is ERC165, IERCX {
     }
 
     /**
-   * @dev Gets the owner of the specified item ID
+   * @dev Gets the user of the specified item ID
    * @param itemId uint256 ID of the item to query the user of
-   * @return owner address currently marked as the owner of the given item ID 
+   * @return owner address currently marked as the owner of the given item ID
    */
     function userOf(uint256 itemId) public view returns (address) {
         address user = _itemOwner[itemId][1];
@@ -118,7 +118,7 @@ contract ERCX is ERC165, IERCX {
    * Can only be called by the item owner or an approved operator.
    * @param to address to be approved for the given item ID
    */
-    function approveTransferUser(address to, uint256 itemId) public {
+    function approveForUser(address to, uint256 itemId) public {
         address user = userOf(itemId);
         address owner = ownerOf(itemId);
 
@@ -142,11 +142,7 @@ contract ERCX is ERC165, IERCX {
    * @param itemId uint256 ID of the item to query the approval of
    * @return address currently approved for the given item ID
    */
-    function getApprovedTransferUser(uint256 itemId)
-        public
-        view
-        returns (address)
-    {
+    function getApprovedForUser(uint256 itemId) public view returns (address) {
         require(_exists(itemId, 1));
         return _transferApprovals[itemId][1];
     }
@@ -159,7 +155,7 @@ contract ERCX is ERC165, IERCX {
    * @param to address to be approved for the given item ID
    * @param itemId uint256 ID of the item to be approved
    */
-    function approveTransferOwner(address to, uint256 itemId) public {
+    function approveForOwner(address to, uint256 itemId) public {
         address owner = ownerOf(itemId);
 
         require(to != owner);
@@ -175,11 +171,7 @@ contract ERCX is ERC165, IERCX {
    * @param itemId uint256 ID of the item to query the approval o
    * @return address currently approved for the given item ID
    */
-    function getApprovedTransferOwner(uint256 itemId)
-        public
-        view
-        returns (address)
-    {
+    function getApprovedForOwner(uint256 itemId) public view returns (address) {
         require(_exists(itemId, 2));
         return _transferApprovals[itemId][2];
     }
@@ -465,7 +457,7 @@ contract ERCX is ERC165, IERCX {
                     spender == owner ||
                     isApprovedForAll(user, spender) ||
                     isApprovedForAll(owner, spender) ||
-                    spender == getApprovedTransferUser(itemId) ||
+                    spender == getApprovedForUser(itemId) ||
                     spender == getCurrentLien(itemId)
             );
             if (spender == owner || isApprovedForAll(owner, spender)) {
@@ -479,7 +471,7 @@ contract ERCX is ERC165, IERCX {
             require(
                 spender == owner ||
                     isApprovedForAll(owner, spender) ||
-                    spender == getApprovedTransferOwner(itemId) ||
+                    spender == getApprovedForOwner(itemId) ||
                     spender == getCurrentLien(itemId)
             );
             return true;
