@@ -1,5 +1,5 @@
-var ERCXFull = artifacts.require("./ERCXFullmock.sol");
+var ERCXTEST = artifacts.require("ERCXTEST");
 
 module.exports = function(deployer) {
-  deployer.deploy(ERCXFull, "TEST", "TST");
+  deployer.deploy(ERCXTEST, "TEST", "TST");
 };

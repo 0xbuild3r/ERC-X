@@ -1,35 +1,95 @@
 pragma solidity ^0.5.0;
 
-import '../../Libraries/introspection/IERC165.sol';
+import "../../Libraries/introspection/IERC165.sol";
 
 contract IERCX is IERC165 {
-  event Transfer(address indexed from, address indexed to, uint256 indexed itemId, uint256 layer, address operator);
-  event Approval(address indexed owner, address indexed approved, uint256 itemId, uint256 layer);
-  event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
-  event LienSet(address indexed attn, uint256 indexed itemId, bool status);
-  event TenantRightSet(address indexed attn, uint256 indexed itemId, bool status);
+    event TransferUser(
+        address indexed from,
+        address indexed to,
+        uint256 indexed itemId,
+        address operator
+    );
+    event ApprovalForUser(
+        address indexed user,
+        address indexed approved,
+        uint256 itemId
+    );
+    event TransferOwner(
+        address indexed from,
+        address indexed to,
+        uint256 indexed itemId,
+        address operator
+    );
+    event ApprovalForOwner(
+        address indexed owner,
+        address indexed approved,
+        uint256 itemId
+    );
+    event ApprovalForAll(
+        address indexed owner,
+        address indexed operator,
+        bool approved
+    );
+    event LienApproval(address indexed to, uint256 indexed itemId);
+    event TenantRightApproval(address indexed to, uint256 indexed itemId);
+    event LienSet(address indexed to, uint256 indexed itemId, bool status);
+    event TenantRightSet(
+        address indexed to,
+        uint256 indexed itemId,
+        bool status
+    );
 
-  function balanceOf(address owner, uint256 layer) public view returns (uint256);
-  function addressOf(uint256 itemId, uint256 layer) public view returns (address);
+    function balanceOfOwner(address owner) public view returns (uint256);
 
-  function safeTransfer(address from, address to, uint256 itemId, uint256 layer) public;
-  function safeTransfer(address from, address to, uint256 itemId, uint256 layer, bytes memory data) public;
+    function balanceOfUser(address user) public view returns (uint256);
 
-  function approveTransfer(address to, uint256 itemId, uint256 layer) public;
-  function getApprovedTransfer(uint256 itemId, uint256 layer) public view returns(address);
+    function userOf(uint256 itemId) public view returns (address);
 
-  function setApprovalForAll(address operator, bool approved) public;
-  function isApprovedForAll(address requester, address operator) public view returns (bool);
+    function ownerOf(uint256 itemId) public view returns (address);
 
-  function approveLien(address to, uint256 itemId) public;
-  function getApprovedLien(uint256 itemId) public view returns(address);
-  function setLien(uint256 itemId) public;
-  function getCurrentLien(uint256 itemId) public view returns(address);
-  function revokeLien(uint256 itemId) public;
+    function safeTransferOwner(address from, address to, uint256 itemId) public;
+    function safeTransferOwner(
+        address from,
+        address to,
+        uint256 itemId,
+        bytes memory data
+    ) public;
 
-  function approveTenantRight(address to, uint256 itemId) public;
-  function getApprovedTenantRight(uint256 itemId) public view returns(address);
-  function setTenantRight(uint256 itemId) public;
-  function getCurrentTenantRight(uint256 itemId) public view returns(address);
-  function revokeTenantRight(uint256 itemId) public;
+    function safeTransferUser(address from, address to, uint256 itemId) public;
+    function safeTransferUser(
+        address from,
+        address to,
+        uint256 itemId,
+        bytes memory data
+    ) public;
+
+    function approveForOwner(address to, uint256 itemId) public;
+    function getApprovedForOwner(uint256 itemId) public view returns (address);
+
+    function approveForUser(address to, uint256 itemId) public;
+    function getApprovedForUser(uint256 itemId) public view returns (address);
+
+    function setApprovalForAll(address operator, bool approved) public;
+    function isApprovedForAll(address requester, address operator)
+        public
+        view
+        returns (bool);
+
+    function approveLien(address to, uint256 itemId) public;
+    function getApprovedLien(uint256 itemId) public view returns (address);
+    function setLien(uint256 itemId) public;
+    function getCurrentLien(uint256 itemId) public view returns (address);
+    function revokeLien(uint256 itemId) public;
+
+    function approveTenantRight(address to, uint256 itemId) public;
+    function getApprovedTenantRight(uint256 itemId)
+        public
+        view
+        returns (address);
+    function setTenantRight(uint256 itemId) public;
+    function getCurrentTenantRight(uint256 itemId)
+        public
+        view
+        returns (address);
+    function revokeTenantRight(uint256 itemId) public;
 }
