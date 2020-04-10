@@ -40,27 +40,35 @@ contract ERCX is ERC165, IERCX {
     mapping(uint256 => address) private _tenantRightAddress;
 
     bytes4 private constant _InterfaceId_ERCX = bytes4(
-        keccak256("balanceOf(address, uint256)")
+        keccak256("balanceOfOwner(address)")
     ) ^
-        bytes4(keccak256("addressOf(uint256, uint256)")) ^
+        bytes4(keccak256("balanceOfUser(address)")) ^
+        bytes4(keccak256("ownerOf(uint256)")) ^
+        bytes4(keccak256("userOf(uint256)")) ^
+        bytes4(keccak256("safeTransferOwner(address, address, uint256)")) ^
         bytes4(
-            keccak256("safeTransferFrom(address, address, uint256, uint256)")
+            keccak256("safeTransferOwner(address, address, uint256, bytes)")
         ) ^
+        bytes4(keccak256("safeTransferUser(address, address, uint256)")) ^
         bytes4(
-            keccak256(
-                "safeTransferFrom(address, address, uint256, uint256, bytes)"
-            )
+            keccak256("safeTransferUser(address, address, uint256, bytes)")
         ) ^
-        bytes4(keccak256("approveTransfer(address, uint256, uint256)")) ^
-        bytes4(keccak256("getApprovedTransfer(uint256, uint256)")) ^
-        bytes4(keccak256("setApprovalForAll(address, bool)")) ^
-        bytes4(keccak256("isApprovedForAll(address, address)")) ^
-        bytes4(
-            keccak256("approveTransferLimitFor(address, uint256, uint256)")
-        ) ^
-        bytes4(keccak256("getApprovedTransferLimit(uint256, uint256)")) ^
-        bytes4(keccak256("setTransferLimitFor(uint256, uint256)")) ^
-        bytes4(keccak256("revokeTransferLimitFor(uint256, uint256)"));
+        bytes4(keccak256("approveForOwner(address, uint256)")) ^
+        bytes4(keccak256("getApprovedForOwner(uint256)")) ^
+        bytes4(keccak256("approveForUser(address, uint256)")) ^
+        bytes4(keccak256("getApprovedForUser(uint256)")) ^
+        bytes4(keccak256("setApprovalForAll(address, bool)")) ^
+        bytes4(keccak256("isApprovedForAll(address, address)")) ^
+        bytes4(keccak256("approveLien(address, uint256)")) ^
+        bytes4(keccak256("getApprovedLien(uint256)")) ^
+        bytes4(keccak256("setLien(uint256)")) ^
+        bytes4(keccak256("getCurrentLien(uint256)")) ^
+        bytes4(keccak256("revokeLien(uint256)")) ^
+        bytes4(keccak256("approveTenantRight(address, uint256)")) ^
+        bytes4(keccak256("getApprovedTenantRight(uint256)")) ^
+        bytes4(keccak256("setTenantRight(uint256)")) ^
+        bytes4(keccak256("getCurrentTenantRight(uint256)")) ^
+        bytes4(keccak256("revokeTenantRight(uint256)"));
 
     constructor() public {
         // register the supported interfaces to conform to ERCX via ERC165
@@ -215,6 +223,7 @@ contract ERCX is ERC165, IERCX {
         require(to != owner);
         require(msg.sender == owner || isApprovedForAll(owner, msg.sender));
         _lienApprovals[itemId] = to;
+        emit LienApproval(to, itemId);
     }
 
     /**
@@ -273,6 +282,7 @@ contract ERCX is ERC165, IERCX {
         require(to != owner);
         require(msg.sender == owner || isApprovedForAll(owner, msg.sender));
         _tenantRightApprovals[itemId] = to;
+        emit TenantRightApproval(to, itemId);
     }
 
     /**

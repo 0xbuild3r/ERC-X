@@ -30,9 +30,11 @@ contract IERCX is IERC165 {
         address indexed operator,
         bool approved
     );
-    event LienSet(address indexed attn, uint256 indexed itemId, bool status);
+    event LienApproval(address indexed to, uint256 indexed itemId);
+    event TenantRightApproval(address indexed to, uint256 indexed itemId);
+    event LienSet(address indexed to, uint256 indexed itemId, bool status);
     event TenantRightSet(
-        address indexed attn,
+        address indexed to,
         uint256 indexed itemId,
         bool status
     );
