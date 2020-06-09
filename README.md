@@ -18,10 +18,10 @@ ERC2615 enables NFTs to support rental and mortgage functions. These functions a
 
 This ERC is a modified version of ERC721. It proposes additional user classes, the right of tenants to enable rentals, the right of lien, and the existing user class owner. With ERC2615, NFT owners will be able to rent out their NFTs and take out a mortgage by collateralizing their NFTs. For example, this standard can apply to:
 
-• Virtual items(gaming assets, virtual artworks)
-• Physical items(houses, cars)
-• Intellectual property rights
-• DAO membership tokens
+- Virtual items(gaming assets, virtual artworks)
+- Physical items(houses, cars)
+- Intellectual property rights
+- DAO membership tokens
 
 NFT developers are also able to integrate ERC2615 since it is fully backward compatible.
 One notable point is that the person who has the right to use an application is not the owner but the user (tenant). Application developers must implement this specification into their applications.
