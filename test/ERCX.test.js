@@ -10,6 +10,8 @@ const {
   expectRevert,
 } = require("@openzeppelin/test-helpers");
 
+const ethUtil = require("ethereumjs-util");
+
 const { ZERO_ADDRESS } = constants;
 const { expect } = require("chai");
 
@@ -70,7 +72,9 @@ contract("Item", (accounts) => {
         from: minter,
       });
     });
+
     /*
+
     describe("balanceOfUser in ERCX", function () {
       context("when the given address owns some items", function () {
         it("returns the amount of items owned by the given address", async function () {
@@ -3157,8 +3161,51 @@ contract("Item", (accounts) => {
         });
       });
     });
+
     */
     describe("signApprovalForAll in ERCX & ERC721", async function () {
+      expect(await item.DOMAIN_SEPARATOR()).to.equal(
+        web3.utils.keccak256(
+          web3.eth.abi.encodeParameter(
+            ["bytes32", "bytes32", "bytes32", "uint256", "address"],
+            [
+              keccak256(
+                toUtf8Bytes(
+                  "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+                )
+              ),
+              web3.utils.keccak256(web3.utils.toUtf8(name)),
+              web3.utils.keccak256(web3.utils.toUtf8(version)),
+              1,
+              item.address,
+            ]
+          )
+        )
+      );
+
+      expect(await token.TYPEHASH()).to.equal(
+        ethUtil.keccak256(
+          ethUtil.toUtf8(
+            "SignApprovalForAll(address from,address to,bool approved,uint256 deadline,uint256 nonce)"
+          )
+        )
+      );
+      /*
+      const EIP712Domain = (comp) => ({
+        name,
+        version,
+        chainId,
+        verifyingContract: comp._address,
+      });
+
+      const Types = {
+        Delegation: [
+          { name: "delegatee", type: "address" },
+          { name: "nonce", type: "uint256" },
+          { name: "expiry", type: "uint256" },
+        ],
+      };
+
       const hash = web3.utils.keccak256(
         web3.eth.abi.encodeParameter(
           {
@@ -3298,7 +3345,7 @@ contract("Item", (accounts) => {
               });
             });
           });
-          */
+          
         }
       );
 
@@ -3309,6 +3356,7 @@ contract("Item", (accounts) => {
           );
         });
       });
+      */
     });
   });
 });

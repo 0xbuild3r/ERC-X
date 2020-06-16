@@ -3,14 +3,13 @@ pragma solidity ^0.5.0;
 import "./ERCXMetadata.sol";
 import "../Interface/IERCXSignApproval.sol";
 
-
 contract ERCXSignApproval is ERCXMetadata, IERCXSignApproval {
     /**
      * @dev Parameters
      */
     // --- EIP712 niceties ---
     bytes32 public DOMAIN_SEPARATOR;
-    bytes32 public constant APPROVE_TYPEHASH = keccak256(
+    bytes32 public constant TYPEHASH = keccak256(
         "SignApprovalForAll(address from,address to,bool approved,uint256 deadline,uint256 nonce)"
     );
 
@@ -58,6 +57,7 @@ contract ERCXSignApproval is ERCXMetadata, IERCXSignApproval {
         address to,
         bool approved,
         uint256 deadline,
+        uint256 nonce,
         uint8 v,
         bytes32 r,
         bytes32 s
@@ -65,14 +65,16 @@ contract ERCXSignApproval is ERCXMetadata, IERCXSignApproval {
         require(deadline == 0 || now <= deadline);
         require(to != from && from != address(0));
 
-        bytes32 hash = keccak256(
-            abi.encode(from, to, approved, deadline, nonces[from]++)
-        );
-        bytes32 prefixed = keccak256(
-            abi.encodePacked("\x19Ethereum Signed Message:\n32", hash)
+        bytes32 structHash = keccak256(
+            abi.encode(TYPEHASH, from, to, deadline, nonce)
         );
 
-        require(from == ecrecover(prefixed, v, r, s));
+        bytes32 digest = keccak256(
+            abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, structHash)
+        );
+
+        require(from == ecrecover(digest, v, r, s));
+        require(nonce == nonces[from]++);
 
         _approveForAll(from, to, approved);
         emit ApprovalForAll(from, to, approved);
