@@ -1,6 +1,5 @@
 node_modules/
 build/
-truffle-config.js
 coverage
 coverage.json
 coverageEnv
