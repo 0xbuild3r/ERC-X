@@ -213,16 +213,16 @@ In addition, new functions introduced in this standard have many similarities wi
 
 ## Test Cases
 
-When running the tests, you need to create a test network with Ganache-CLI:
+First, clone this repo and run `npm install`. Then create a test network with the following command:
 
 ```
-ganache-cli -a 15  --gasLimit=0x1fffffffffffff -e 1000000000
+npx ganache-cli -a 15  --gasLimit=20000000
 ```
 
-And then run the tests using Truffle: 
+In a separate terminal, run the tests using Truffle:
 
 ```
-truffle test -e development
+npx truffle test -e test
 ```
 
 Powered by Truffle and Openzeppelin test helper.

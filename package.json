@@ -1,0 +1,29 @@
+{
+  "name": "ercx",
+  "version": "0.1.0",
+  "description": "NFT standard supports rental and mortgage functions.",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kohshiba/ERC-X.git"
+  },
+  "author": "@kohshiba",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kohshiba/ERC-X/issues"
+  },
+  "homepage": "https://github.com/kohshiba/ERC-X#readme",
+  "dependencies": {
+    "@openzeppelin/test-helpers": "^0.5.6",
+    "@truffle/hdwallet-provider": "^1.0.35",
+    "fs": "0.0.1-security",
+    "ganache-cli": "^6.9.1",
+    "truffle": "^5.1.30"
+  }
+}
