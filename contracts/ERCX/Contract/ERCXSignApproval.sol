@@ -1,9 +1,12 @@
 pragma solidity ^0.5.0;
 
 import "./ERCXMetadata.sol";
-import "../Interface/IERCXSignApproval.sol";
 
-contract ERCXSignApproval is ERCXMetadata, IERCXSignApproval {
+//import "../Interface/IERCXSignApproval.sol";
+
+contract ERCXSignApproval is
+    ERCXMetadata /*, IERCXSignApproval*/
+{
     /**
      * @dev Parameters
      */
@@ -48,6 +51,7 @@ contract ERCXSignApproval is ERCXMetadata, IERCXSignApproval {
      * @param to operator address to set the approval
      * @param approved representing the status of the approval to be set
      * @param deadline the signature expires after deadline
+     * @param nonce the unique number to prevent reentrancy attack
      * @param v representing a part of the signature
      * @param r representing a part of the signature
      * @param s representing a part of the signature
@@ -66,14 +70,14 @@ contract ERCXSignApproval is ERCXMetadata, IERCXSignApproval {
         require(to != from && from != address(0));
 
         bytes32 structHash = keccak256(
-            abi.encode(TYPEHASH, from, to, deadline, nonce)
+            abi.encode(TYPEHASH, from, to, approved, deadline, nonce)
         );
 
         bytes32 digest = keccak256(
             abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, structHash)
         );
 
-        require(from == ecrecover(digest, v, r, s));
+        require(from == ecrecover(digest, v, r, s), "a");
         require(nonce == nonces[from]++);
 
         _approveForAll(from, to, approved);

@@ -11,6 +11,7 @@ const {
 } = require("@openzeppelin/test-helpers");
 
 const ethUtil = require("ethereumjs-util");
+const ethWallet = require("ethereumjs-wallet");
 
 const { ZERO_ADDRESS } = constants;
 const { expect } = require("chai");
@@ -3164,199 +3165,78 @@ contract("Item", (accounts) => {
 
     */
     describe("signApprovalForAll in ERCX & ERC721", async function () {
-      expect(await item.DOMAIN_SEPARATOR()).to.equal(
-        web3.utils.keccak256(
-          web3.eth.abi.encodeParameter(
-            ["bytes32", "bytes32", "bytes32", "uint256", "address"],
-            [
-              keccak256(
-                toUtf8Bytes(
-                  "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
-                )
-              ),
-              web3.utils.keccak256(web3.utils.toUtf8(name)),
-              web3.utils.keccak256(web3.utils.toUtf8(version)),
-              1,
-              item.address,
-            ]
-          )
-        )
-      );
-
-      expect(await token.TYPEHASH()).to.equal(
-        ethUtil.keccak256(
-          ethUtil.toUtf8(
-            "SignApprovalForAll(address from,address to,bool approved,uint256 deadline,uint256 nonce)"
-          )
-        )
-      );
-      /*
-      const EIP712Domain = (comp) => ({
-        name,
-        version,
-        chainId,
-        verifyingContract: comp._address,
-      });
-
-      const Types = {
-        Delegation: [
-          { name: "delegatee", type: "address" },
-          { name: "nonce", type: "uint256" },
-          { name: "expiry", type: "uint256" },
-        ],
-      };
-
-      const hash = web3.utils.keccak256(
-        web3.eth.abi.encodeParameter(
-          {
-            Struct: {
-              "1": "address",
-              "2": "address",
-              "3": "bool",
-              "4": "uint256",
-              "5": "uint256",
-            },
-          },
-          {
-            "1": owner,
-            "2": operator,
-            "3": true,
-            "4": 0,
-            "5": 1,
-          }
-        )
-      );
-
-      const signature = await web3.eth.sign(hash, owner);
-      const r = signature.slice(0, 66);
-      const s = "0x" + signature.slice(66, 130);
-      let v = "0x" + signature.slice(130, 132);
-
-      v = await web3.utils.toDecimal(v);
-
-      if (v != 27 || v != 28) {
-        v += 27;
-      }
-
-      context(
-        "when the operator willing to approve is not the owner",
-        function () {
-          context(
-            "when there is no operator approval set by the sender",
-            function () {
-              it("approves the operator", async function () {
-                await item.signApprovalForAll(
-                  owner,
-                  operator,
-                  true,
-                  0,
-                  v,
-                  r,
-                  s,
-                  {
-                    from: operator,
-                  }
-                );
-
-                expect(await item.isApprovedForAll(owner, operator)).to.equal(
-                  true
-                );
-              });
-
-              it("emits an approval event", async function () {
-                const { logs } = await item.signApprovalForAll(
-                  owner,
-                  operator,
-                  true,
-                  0,
-                  v,
-                  r,
-                  s,
-                  {
-                    from: operator,
-                  }
-                );
-
-                expectEvent.inLogs(logs, "ApprovalForAll", {
-                  owner: owner,
-                  operator: operator,
-                  approved: true,
-                });
-              });
-            }
-          );
-          /*
-          context("when the operator was set as not approved", function () {
-            beforeEach(async function () {
-              await item.setApprovalForAll(operator, false, { from: owner });
-            });
-
-            it("approves the operator", async function () {
-              await item.setApprovalForAll(operator, true, { from: owner });
-
-              expect(await item.isApprovedForAll(owner, operator)).to.equal(
-                true
-              );
-            });
-
-            it("emits an approval event", async function () {
-              const { logs } = await item.setApprovalForAll(operator, true, {
-                from: owner,
-              });
-
-              expectEvent.inLogs(logs, "ApprovalForAll", {
-                owner: owner,
-                operator: operator,
-                approved: true,
-              });
-            });
-
-            it("can unset the operator approval", async function () {
-              await item.setApprovalForAll(operator, false, { from: owner });
-
-              expect(await item.isApprovedForAll(owner, operator)).to.equal(
-                false
-              );
-            });
-          });
-
-          context("when the operator was already approved", function () {
-            beforeEach(async function () {
-              await item.setApprovalForAll(operator, true, { from: owner });
-            });
-
-            it("keeps the approval to the given address", async function () {
-              await item.setApprovalForAll(operator, true, { from: owner });
-
-              expect(await item.isApprovedForAll(owner, operator)).to.equal(
-                true
-              );
-            });
-
-            it("emits an approval event", async function () {
-              const { logs } = await item.setApprovalForAll(operator, true, {
-                from: owner,
-              });
-
-              expectEvent.inLogs(logs, "ApprovalForAll", {
-                owner: owner,
-                operator: operator,
-                approved: true,
-              });
-            });
-          });
-          
-        }
-      );
-
-      context("when the operator is the owner", function () {
-        it("reverts", async function () {
-          await expectRevert.unspecified(
-            item.setApprovalForAll(owner, true, { from: owner })
+      describe("DOMAIN_SEPARATOR is defined", function () {
+        it("exists in the contract", async function () {
+          expect(await item.DOMAIN_SEPARATOR()).to.equal(
+            web3.utils.keccak256(
+              web3.eth.abi.encodeParameters(
+                ["bytes32", "bytes32", "bytes32", "uint256", "address"],
+                [
+                  web3.utils.keccak256(
+                    "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+                  ),
+                  web3.utils.keccak256(web3.utils.utf8ToHex(name)),
+                  web3.utils.keccak256(web3.utils.utf8ToHex(version)),
+                  1,
+                  item.address,
+                ]
+              )
+            )
           );
         });
       });
-      */
+
+      describe("TYPEHASH is defined", function () {
+        it("exists in the contract", async function () {
+          expect(await item.TYPEHASH()).to.equal(
+            web3.utils.keccak256(
+              "SignApprovalForAll(address from,address to,bool approved,uint256 deadline,uint256 nonce)"
+            )
+          );
+        });
+      });
+
+      describe("when signed properly", async function () {
+        it("approves the operator", async function () {
+          const type = await item.TYPEHASH();
+          const domain = await item.DOMAIN_SEPARATOR();
+          const privateKey =
+            "0xbdcaa9c90ae131f3321d3da91b49ccb169bf4c0175027929d0b2d42129a3446f";
+          const publicKey = "0xf1c64a260c427d678b3358bface9fa2b6c439453";
+
+          const digest = web3.utils.keccak256(
+            web3.eth.abi.encodeParameters(
+              ["bytes32", "address", "address", "bool", "uint256", "uint256"],
+              [type, publicKey, operator, true, 0, 0]
+            )
+          );
+
+          const signHash = web3.utils.soliditySha3("\x19\x01", domain, digest);
+
+          const sig = ethUtil.ecsign(
+            ethUtil.toBuffer(signHash),
+            ethUtil.toBuffer(privateKey)
+          );
+
+          await item.signApprovalForAll(
+            publicKey,
+            operator,
+            true,
+            0,
+            0,
+            sig.v,
+            sig.r,
+            sig.s,
+            {
+              from: operator,
+            }
+          );
+
+          expect(await item.isApprovedForAll(publicKey, operator)).to.equal(
+            true
+          );
+        });
+      });
     });
   });
 });
